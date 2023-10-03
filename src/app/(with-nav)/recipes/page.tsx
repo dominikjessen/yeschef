@@ -12,7 +12,7 @@ export default async function Recipes() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Recipes page</h1>
+      <h1>Your recipes</h1>
       <p>{session.user?.email} is logged in</p>
       <Link href="/api/auth/signout">Logout</Link>
     </div>
