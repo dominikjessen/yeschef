@@ -7,8 +7,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createNewRecipeAction } from '@/actions/createNewRecipe';
-import { useTransition } from 'react';
+import { Prisma } from '@prisma/client';
+import { useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { updateExistingRecipeAction } from '@/actions/updateExistingRecipe';
 
 export const recipeFormSchema = z.object({
   name: z.string().min(1, { message: 'Please add a name for this recipe' }),
@@ -16,26 +18,48 @@ export const recipeFormSchema = z.object({
 });
 
 export type RecipeFormProps = {
-  submitCallback: (formValues: z.infer<typeof recipeFormSchema>) => void;
+  recipe?: {
+    id: string;
+    name: string;
+    link: string;
+    userId: string;
+  };
 };
 
-export default function RecipeForm() {
+export default function RecipeForm({ recipe }: RecipeFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof recipeFormSchema>>({
     resolver: zodResolver(recipeFormSchema),
     defaultValues: {
-      name: '',
-      link: ''
+      name: recipe ? recipe.name : '',
+      link: recipe ? recipe.link : ''
     }
   });
 
   async function onSubmit(values: z.infer<typeof recipeFormSchema>) {
-    startTransition(async () => {
-      await createNewRecipeAction(values);
-      router.replace('/recipes');
-    });
+    const handleNewRecipe = () => {
+      startTransition(async () => {
+        await createNewRecipeAction(values);
+        router.replace('/recipes');
+      });
+    };
+
+    const handleUpdatedRecipe = () => {
+      if (!Object.keys(form.formState.dirtyFields).length || !recipe) return;
+
+      startTransition(async () => {
+        const { success } = await updateExistingRecipeAction(recipe.id, values);
+
+        if (success) {
+          console.log('Successfully updated');
+          form.reset({ name: form.getValues().name, link: form.getValues().link });
+        }
+      });
+    };
+
+    recipe ? handleUpdatedRecipe() : handleNewRecipe();
   }
 
   return (
@@ -68,7 +92,7 @@ export default function RecipeForm() {
           )}
         />
         <Button type="submit" className="self-center">
-          Add recipe
+          {recipe ? 'Save changes' : 'Add recipe'}
         </Button>
       </form>
     </Form>

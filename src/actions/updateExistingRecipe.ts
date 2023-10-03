@@ -7,12 +7,12 @@ import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
-export type CreateRecipeActionResponse = {
+export type UpdateRecipeActionResponse = {
   success: boolean;
   error: Error | null;
 };
 
-export async function createNewRecipeAction(formValues: z.infer<typeof recipeFormSchema>): Promise<CreateRecipeActionResponse> {
+export async function updateExistingRecipeAction(recipeId: string, newValues: z.infer<typeof recipeFormSchema>): Promise<UpdateRecipeActionResponse> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user.id) {
@@ -20,11 +20,11 @@ export async function createNewRecipeAction(formValues: z.infer<typeof recipeFor
   }
 
   try {
-    await prisma.recipe.create({
+    await prisma.recipe.update({
+      where: { id: recipeId },
       data: {
-        name: formValues.name,
-        link: formValues.link ?? '',
-        userId: session.user.id
+        name: newValues.name,
+        link: newValues.link ?? ''
       }
     });
   } catch (error) {
