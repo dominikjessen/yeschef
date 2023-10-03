@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createNewRecipeAction } from '@/actions/createNewRecipe';
 import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 export const recipeFormSchema = z.object({
   name: z.string().min(1, { message: 'Please add a name for this recipe' }),
@@ -20,6 +21,7 @@ export type RecipeFormProps = {
 
 export default function RecipeForm() {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof recipeFormSchema>>({
     resolver: zodResolver(recipeFormSchema),
@@ -32,7 +34,7 @@ export default function RecipeForm() {
   async function onSubmit(values: z.infer<typeof recipeFormSchema>) {
     startTransition(async () => {
       await createNewRecipeAction(values);
-      // router.replace('/items');
+      router.replace('/recipes');
     });
   }
 
