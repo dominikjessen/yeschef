@@ -1,22 +1,80 @@
 'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { createNewRecipeAction } from '@/actions/createNewRecipe';
+import { useTransition } from 'react';
+
+export const recipeFormSchema = z.object({
+  name: z.string().min(1, { message: 'Please add a name for this recipe' }),
+  link: z.string().optional()
+});
+
+export type RecipeFormProps = {
+  submitCallback: (formValues: z.infer<typeof recipeFormSchema>) => void;
+};
 
 export default function RecipeForm() {
-  const [count, setCount] = useState(0);
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<z.infer<typeof recipeFormSchema>>({
+    resolver: zodResolver(recipeFormSchema),
+    defaultValues: {
+      name: '',
+      link: ''
+    }
+  });
+
+  async function onSubmit(values: z.infer<typeof recipeFormSchema>) {
+    startTransition(async () => {
+      await createNewRecipeAction(values);
+      console.log('recipe created');
+
+      // router.replace('/items');
+    });
+  }
 
   return (
-    <div>
-      <h2>This is the recipe form</h2>
-      <div className="w-1/2 grid grid-cols-3 gap-2 items-center place-items-center p-4 border-primary">
-        <button onClick={() => setCount((prev) => prev - 1)} className="w-10 h-10 p-2 border bg-primary">
-          -
-        </button>
-        <p className="w-fit">Count is: {count}</p>
-        <button onClick={() => setCount((prev) => prev + 1)} className="w-10 h-10 p-2 border bg-primary">
-          +
-        </button>
-      </div>
+    <div className="w-4/6 mx-auto">
+      <h2 className="font-bold text-2xl">Add a new recipe</h2>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recipe name (required)</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Link to recipe</FormLabel>
+                <FormControl>
+                  <Input type="url" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="self-center">
+            Add recipe
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }

@@ -2,16 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
- --background: 0 20% 99%;
- --foreground: 0 0% 2%;
- --primary: 0 100% 71%;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
     --background: 0 20% 99%;
     --foreground: 0 0% 2%;
+
     --primary: 0 100% 71%;
+    --secondary: 0 82% 72%;
+
+    --destructive: 0 72% 51%;
+
+    --border: 220 13% 91%; /* #e5e7eb */
+    --input: 220 13% 91%; /* #e5e7eb */
+    --ring: 224 71.4% 4.1%; /* #030712 */
+  }
+
+  /* TODO: Dark mode colors */
+  .dark {
+    --background: 0 20% 99%;
+    --foreground: 0 0% 2%;
+
+    --primary: 0 100% 71%;
+    --secondary: 0 82% 72%;
+
+    --destructive: 0 72% 51%;
+
+    --border: 220 13% 91%; /* #e5e7eb */
+    --input: 220 13% 91%; /* #e5e7eb */
+    --ring: 224 71.4% 4.1%; /* #030712 */
   }
 }
