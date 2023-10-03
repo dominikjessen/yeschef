@@ -15,7 +15,6 @@ export const authOptions = {
     })
   ],
   callbacks: {
-    // TODO: Why are the type declarations not updating here?
     async session({ session, token, user }: { session: Session; token: JWT; user: User }) {
       session.user.id = user.id;
       return session;

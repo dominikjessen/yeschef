@@ -13,8 +13,8 @@ export default async function NewRecipe() {
   }
 
   return (
-    <div>
-      <h1>Create new recipe</h1>
+    <div className="w-4/6 mx-auto">
+      <h2 className="font-bold text-2xl">Add a new recipe</h2>
       <RecipeForm />
     </div>
   );
