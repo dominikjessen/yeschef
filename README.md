@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+  <a href="https://yeschef.recipes.com">
+  </a>
+  <h3 align="center">Meal planning shouldn't take more than 5 minutes a week. Yes Chef! will help you create a great menu for the week ahead using all your favorite recipes.</h3>
+  <div align="center">
+    <h3>Built with</h3>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 64px)); gap: 1rem;">
+      <img width="64px" height="64px" src="/public/company-logos/typescript-color.svg" alt="Typescript" />
+      <img width="64px" height="64px" src="/public/company-logos/nextdotjs-color.svg" alt="Next.js" />
+      <img width="64px" height="64px" src="/public/company-logos/radixui-color.svg" alt="Radix UI" />
+      <img width="64px" height="64px" src="/public/company-logos/reacthookform-color.svg" alt="React Hook Form" />
+      <img width="64px" height="64px" src="/public/company-logos/zod-color.svg" alt="Zod" />
+      <!-- <img width="64px" height="64px" src="/public/company-logos/jest-color.svg" alt="Jest" /> -->
+      <!-- <img width="64px" height="64px" src="/public/company-logos/testinglibrary-color.svg" alt="React Testing Library" /> -->
+      <img width="64px" height="64px" src="/public/company-logos/html5-color.svg" alt="HTML5" />
+      <img width="64px" height="64px" src="/public/company-logos/css3-color.svg" alt="CSS3" />
+      <img width="64px" height="64px" src="/public/company-logos/tailwindcss-color.svg" alt="Tailwind" />
+      <img width="64px" height="64px" src="/public/company-logos/mysql-color.svg" alt="MySQL" />
+      <img width="64px" height="64px" src="/public/company-logos/prisma-color.svg" alt="Prisma" />
+    </div>
 
-## Getting Started
+  </div>
+</p>
 
-First, run the development server:
+## About Yes Chef!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Yes Chef! is an app to quickly figure out your meal plan for the week from all your favorites (or forgotten favorites). Simply add your recipes to your own little recipe book, start the random generator and you'll have a varied meal plan in no time.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<a href='https://yeschef.recipes'>Check out Yes Chef! here</a>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## About the codebase & future work
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Yes Chef! started as a little hobby project to both scratch my own itch. I love cooking but am notoriously bad at choosing what to eat for the week taking up too much of my mental space. I wanted to combine this with building a Next.js app that would largely depend on Server Components and the new Server Actions. I also wanted to try out Prisma with a MySQL database on the backend-side of things as well as NextAuth (Auth.js) for authentication. For the meal plan creator itself I wanted to play around with drag & drop and used Atlassian's wonderful beautiful-react-dnd library.
 
-## Learn More
+### Product Images
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+TBD
