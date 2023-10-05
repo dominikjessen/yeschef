@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { recipeFormSchema } from '@/components/forms/RecipeForm';
-import { prisma } from '@/lib/prismaClient';
+import prisma from '@/lib/prismaClient';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';

@@ -1,6 +1,6 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import RecipeForm from '@/components/forms/RecipeForm';
-import { prisma } from '@/lib/prismaClient';
+import prisma from '@/lib/prismaClient';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
