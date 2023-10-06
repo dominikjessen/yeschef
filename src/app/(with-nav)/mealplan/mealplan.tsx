@@ -44,6 +44,24 @@ export default function Mealplan() {
     }
   }
 
+  async function removeOneRecipe() {
+    const currMealplan = mealplans[current];
+    setMealplans((prev) => [...prev, [...currMealplan.slice(0, currMealplan.length - 1)]]);
+    setCurrent(mealplans.length);
+  }
+
+  async function addOneRecipe() {
+    const currentIds = mealplans[current].map((recipe) => recipe.id);
+    const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
+    if (newRecipe) {
+      const currMealplan = mealplans[current];
+
+      // Add single recipe to current mealplan and add to end of history
+      setMealplans((prev) => [...prev, [...currMealplan, ...(newRecipe as Recipe[])]]);
+      setCurrent(mealplans.length);
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true);
     const getInitialRecipes = async () => {
@@ -58,6 +76,13 @@ export default function Mealplan() {
     setIsLoading(false);
   }, []);
 
+  // TODO: Determine if effect is the best choice here
+  useEffect(() => {
+    if (mealplans[current]) {
+      setNumberOfRecipes(mealplans[current].length);
+    }
+  }, [mealplans, current]);
+
   return (
     <>
       {!isLoading && (
@@ -71,6 +96,12 @@ export default function Mealplan() {
             <Button disabled={current === mealplans.length - 1} onClick={() => setCurrent((curr) => curr + 1)}>
               Next
             </Button>
+            <Button disabled={numberOfRecipes === 0} onClick={removeOneRecipe}>
+              Remove day
+            </Button>
+            <Button disabled={numberOfRecipes === 7} onClick={addOneRecipe}>
+              Add day
+            </Button>
           </div>
           <div className={cn(`grid grid-cols-${numberOfRecipes} gap-2 place-items-center`)}>
             {DAYS_OF_WEEK.slice(0, numberOfRecipes).map((day) => (
@@ -78,7 +109,7 @@ export default function Mealplan() {
             ))}
           </div>
           <div className={cn(`grid grid-cols-${numberOfRecipes} gap-2`)}>
-            {!isLoading && mealplans[current] && mealplans[current].map((recipe) => <MealplanCard key={recipe.id} recipe={recipe} />)}
+            {mealplans[current] && mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} />)}
           </div>
         </div>
       )}
