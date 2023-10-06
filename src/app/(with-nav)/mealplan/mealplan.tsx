@@ -5,27 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Recipe } from '@prisma/client';
-import { HTMLAttributes, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import MealplanCard from './mealplanCard';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
-  recipe: Recipe;
-}
-
-function MealplanCard({ recipe, className }: MealplanCardProps) {
-  return (
-    <div className={cn(className, 'bg-teal-500 grid grid-cols-1 gap-4 p-12')}>
-      <div className="flex flex-col gap-8">
-        <span>Roll die</span>
-        <span>Lock</span>
-        <span>Drag handle</span>
-      </div>
-      <span>{recipe.name}</span>
-      <span>LINK</span>
-    </div>
-  );
-}
 
 const initialMealplan: Recipe[][] = [];
 const initialNumberOfRecipes = 2;
