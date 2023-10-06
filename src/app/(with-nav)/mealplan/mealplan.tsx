@@ -7,65 +7,54 @@ import { cn } from '@/lib/utils';
 import { Recipe } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import MealplanCard from './mealplanCard';
+import { useMealplanStore } from '@/store/mealplanStore';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-const initialMealplan: Recipe[][] = [];
-const initialNumberOfRecipes = 2;
+const INITIAL_NUMBER_OF_RECIPES = 5;
 
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
-  const [mealplans, setMealplans] = useState(initialMealplan);
-  const [current, setCurrent] = useState(0);
-  const [numberOfRecipes, setNumberOfRecipes] = useState(initialNumberOfRecipes);
 
-  async function getNewRecipes() {
+  // Zustand store
+  const mealplans = useMealplanStore((state) => state.mealplans);
+  const current = useMealplanStore((state) => state.current);
+  const undo = useMealplanStore((state) => state.undo);
+  const redo = useMealplanStore((state) => state.redo);
+  const initMealplans = useMealplanStore((state) => state.initMealplans);
+  const addNewMealplan = useMealplanStore((state) => state.addRandomMealplan);
+  const addOneRecipe = useMealplanStore((state) => state.addOneRecipe);
+  const removeOneRecipe = useMealplanStore((state) => state.removeOneRecipe);
+
+  async function handleRandomizeClicked() {
     const currentIds = mealplans[current].map((recipe) => recipe.id);
-    const res = await getRandomRecipesAction({ numberOfRecipes: numberOfRecipes, currentRecipes: currentIds });
+    const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
     if (res.data) {
-      setMealplans((prev) => [...prev, res.data as Recipe[]]);
-      setCurrent(mealplans.length); // Always go to end of list when randomized
+      addNewMealplan(res.data as Recipe[]);
     }
   }
 
-  async function removeOneRecipe() {
-    const currMealplan = mealplans[current];
-    setMealplans((prev) => [...prev, [...currMealplan.slice(0, currMealplan.length - 1)]]);
-    setCurrent(mealplans.length);
-  }
-
-  async function addOneRecipe() {
+  async function handleAddOneClicked() {
     const currentIds = mealplans[current].map((recipe) => recipe.id);
     const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
     if (newRecipe) {
-      const currMealplan = mealplans[current];
-
-      // Add single recipe to current mealplan and add to end of history
-      setMealplans((prev) => [...prev, [...currMealplan, ...(newRecipe as Recipe[])]]);
-      setCurrent(mealplans.length);
+      addOneRecipe(newRecipe[0]);
     }
   }
 
   useEffect(() => {
     setIsLoading(true);
     const getInitialRecipes = async () => {
-      const res = await getRandomRecipesAction({ numberOfRecipes: initialNumberOfRecipes });
+      const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
 
       if (res.data) {
-        setMealplans([res.data]);
+        initMealplans(res.data);
       }
     };
 
-    getInitialRecipes();
-    setIsLoading(false);
-  }, []);
-
-  // TODO: Determine if effect is the best choice here
-  useEffect(() => {
-    if (mealplans[current]) {
-      setNumberOfRecipes(mealplans[current].length);
-    }
-  }, [mealplans, current]);
+    getInitialRecipes().then(() => {
+      setIsLoading(false);
+    });
+  }, [initMealplans]);
 
   return (
     <>
@@ -74,7 +63,7 @@ export default function Mealplan() {
           {/* Menu Bar */}
           <div className="border flex gap-8 p-2">
             <span className="grow">Explanation text</span>
-            <Button variant="icon" size="icon" onClick={getNewRecipes} aria-label="Randomize recipes">
+            <Button variant="icon" size="icon" onClick={handleRandomizeClicked} aria-label="Randomize recipes">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -95,18 +84,12 @@ export default function Mealplan() {
             </Button>
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button variant="icon" size="icon" onClick={() => setCurrent((curr) => curr - 1)} disabled={current === 0} aria-label="Undo">
+              <Button variant="icon" size="icon" onClick={undo} disabled={current === 0} aria-label="Undo">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                 </svg>
               </Button>
-              <Button
-                variant="icon"
-                size="icon"
-                onClick={() => setCurrent((curr) => curr + 1)}
-                disabled={current === mealplans.length - 1}
-                aria-label="Redo"
-              >
+              <Button variant="icon" size="icon" onClick={redo} disabled={current === mealplans.length - 1} aria-label="Redo">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
                 </svg>
@@ -114,12 +97,12 @@ export default function Mealplan() {
             </div>
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button variant="icon" size="icon" onClick={removeOneRecipe} disabled={numberOfRecipes === 0} aria-label="Remove one day">
+              <Button variant="icon" size="icon" onClick={removeOneRecipe} disabled={mealplans[current].length === 0} aria-label="Remove one day">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
                 </svg>
               </Button>
-              <Button variant="icon" size="icon" onClick={addOneRecipe} disabled={numberOfRecipes === 7} aria-label="Add one day">
+              <Button variant="icon" size="icon" onClick={handleAddOneClicked} disabled={mealplans[current].length === 7} aria-label="Add one day">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -128,14 +111,14 @@ export default function Mealplan() {
           </div>
 
           {/* Days of Week header */}
-          <div className={cn(`grid grid-cols-${numberOfRecipes} gap-2 place-items-center`)}>
-            {DAYS_OF_WEEK.slice(0, numberOfRecipes).map((day) => (
+          <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2 place-items-center`)}>
+            {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
               <div key={day}>{day}</div>
             ))}
           </div>
 
           {/* Recipes */}
-          <div className={cn(`grid grid-cols-${numberOfRecipes} gap-2`)}>
+          <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
             {mealplans[current] && mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} />)}
           </div>
         </div>

@@ -24,7 +24,8 @@
     "react-dom": "latest",
     "react-hook-form": "^7.47.0",
     "tailwind-merge": "^1.14.0",
-    "zod": "^3.22.2"
+    "zod": "^3.22.2",
+    "zustand": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "latest",
