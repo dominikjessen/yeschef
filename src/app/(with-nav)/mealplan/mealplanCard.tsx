@@ -1,7 +1,11 @@
+'use client';
+
 import { getRandomRecipesAction } from '@/actions/getRandomRecipes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useMealplanStore } from '@/store/mealplanStore';
+import { CSS } from '@dnd-kit/utilities';
+import { useSortable } from '@dnd-kit/sortable';
 import { Recipe } from '@prisma/client';
 import { HTMLAttributes } from 'react';
 
@@ -18,6 +22,13 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
   const toggleLockStateAtIndex = useMealplanStore((state) => state.toggleLockStateAtIndex);
   const getNewRecipeForIndex = useMealplanStore((state) => state.getNewRecipeForIndex);
 
+  // Dndkit
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({ id: index });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  };
+
   async function handleNewRecipeClicked() {
     const currentIds = mealplans[current].map((recipe) => recipe.id);
     const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
@@ -28,7 +39,12 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
   }
 
   return (
-    <div className={cn(className, 'bg-teal-500 flex flex-col items-center gap-8 p-12 h-full')}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      className={cn(className, 'bg-teal-500 flex flex-col items-center gap-8 p-12 h-full cursor-default')}
+    >
       <Button variant="icon" size="icon" onClick={handleNewRecipeClicked} aria-label="Get new random recipe">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +83,22 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
           </svg>
         )}
       </Button>
-      <span>Drag handle</span>
+      <Button ref={setActivatorNodeRef} variant="icon" size="icon" aria-label="Drag handle" {...listeners}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-5 h-5"
+        >
+          <polyline points="18 8 22 12 18 16" />
+          <polyline points="6 8 2 12 6 16" />
+          <line x1="2" x2="22" y1="12" y2="12" />
+        </svg>
+      </Button>
       {recipe.link && (
         <a
           href={recipe.link}

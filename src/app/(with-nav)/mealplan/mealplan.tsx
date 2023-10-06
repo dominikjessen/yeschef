@@ -8,6 +8,8 @@ import { Recipe } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -25,6 +27,14 @@ export default function Mealplan() {
   const addOneRecipe = useMealplanStore((state) => state.addOneRecipe);
   const removeOneRecipe = useMealplanStore((state) => state.removeOneRecipe);
 
+  // Dndkit
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
+
   async function handleRandomizeClicked() {
     const currentIds = mealplans[current].map((recipe) => recipe.id);
     const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
@@ -39,6 +49,11 @@ export default function Mealplan() {
     if (newRecipe) {
       addOneRecipe(newRecipe[0]);
     }
+  }
+
+  function onDragEnd(e: any) {
+    console.log(e);
+    // TODO: reshuffle arrays
   }
 
   useEffect(() => {
@@ -59,7 +74,7 @@ export default function Mealplan() {
   return (
     <>
       {!isLoading && (
-        <div className="w-screen">
+        <div className="w-full">
           {/* Menu Bar */}
           <div className="border flex gap-8 p-2">
             <span className="grow">Explanation text</span>
@@ -117,11 +132,15 @@ export default function Mealplan() {
             ))}
           </div>
 
-          {/* Recipes */}
-          <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
-            {mealplans[current] &&
-              mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} index={index} />)}
-          </div>
+          {/* Recipes (dnd area) */}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+            <SortableContext items={mealplans[current].map((_recipe, index) => index)} strategy={horizontalListSortingStrategy}>
+              <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
+                {mealplans[current] &&
+                  mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} index={index} />)}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
     </>
