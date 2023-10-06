@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 
 type MealplanState = {
   mealplans: Recipe[][];
-  lockedRecipes: number[];
+  lockStates: boolean[][];
   current: number;
   undo: () => void;
   redo: () => void;
@@ -12,27 +12,47 @@ type MealplanState = {
   addRandomMealplan: (newMealplan: Recipe[]) => void;
   removeOneRecipe: () => void;
   addOneRecipe: (newRecipe: Recipe) => void;
-  lockSingleRecipe: (index: number) => void;
-  unlockSingleRecipe: (index: number) => void;
+  toggleLockStateAtIndex: (index: number) => void;
+  getNewRecipeForIndex: (index: number, newRecipe: Recipe) => void;
 };
 
 export const useMealplanStore = create<MealplanState>()(
   devtools((set) => ({
     mealplans: [],
-    lockedRecipes: [],
+    lockStates: [],
     current: 0,
     undo: () => set((state) => ({ current: state.current - 1 })),
     redo: () => set((state) => ({ current: state.current + 1 })),
-    initMealplans: (initialMealplan) => set((state) => ({ mealplans: [initialMealplan] })),
-    addRandomMealplan: (newMealplan) => set((state) => ({ mealplans: [...state.mealplans, newMealplan], current: state.mealplans.length })),
+    initMealplans: (initialMealplan) => set((state) => ({ mealplans: [initialMealplan], lockStates: [Array(initialMealplan.length).fill(false)] })),
+    addRandomMealplan: (newMealplan) =>
+      set((state) => ({
+        mealplans: [...state.mealplans, newMealplan],
+        current: state.mealplans.length,
+        lockStates: [...state.lockStates, [...state.lockStates[state.lockStates.length - 1]]]
+      })),
     removeOneRecipe: () =>
       set((state) => ({
         mealplans: [...state.mealplans, state.mealplans[state.current].slice(0, state.mealplans[state.current].length - 1)],
-        current: state.mealplans.length
+        current: state.mealplans.length,
+        lockStates: [...state.lockStates, state.lockStates[state.current].slice(0, -1)]
       })),
     addOneRecipe: (newRecipe) =>
-      set((state) => ({ mealplans: [...state.mealplans, [...state.mealplans[state.current], newRecipe]], current: state.mealplans.length })),
-    lockSingleRecipe: (index) => set((state) => ({ lockedRecipes: [...state.lockedRecipes, index] })),
-    unlockSingleRecipe: (index) => set((state) => ({ lockedRecipes: state.lockedRecipes.filter((i) => i !== index) }))
+      set((state) => ({
+        mealplans: [...state.mealplans, [...state.mealplans[state.current], newRecipe]],
+        current: state.mealplans.length,
+        lockStates: [...state.lockStates, [...state.lockStates[state.current], false]]
+      })),
+    toggleLockStateAtIndex: (index) =>
+      set((state) => ({
+        lockStates: [...state.lockStates.slice(0, -1), state.lockStates[state.current].map((value, i) => (i === index ? !value : value))]
+      })),
+    getNewRecipeForIndex: (index, newRecipe) =>
+      set((state) => {
+        return {
+          mealplans: [...state.mealplans, state.mealplans[state.current].map((recipe, i) => (i === index ? newRecipe : recipe))],
+          current: state.mealplans.length,
+          lockStates: [...state.lockStates, [...state.lockStates[state.lockStates.length - 1]]]
+        };
+      })
   }))
 );

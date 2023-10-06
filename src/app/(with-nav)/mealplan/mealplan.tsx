@@ -119,7 +119,8 @@ export default function Mealplan() {
 
           {/* Recipes */}
           <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
-            {mealplans[current] && mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} />)}
+            {mealplans[current] &&
+              mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} index={index} />)}
           </div>
         </div>
       )}
