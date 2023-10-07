@@ -24,7 +24,7 @@ export async function updateExistingRecipeAction(recipeId: string, newValues: z.
       where: { id: recipeId },
       data: {
         name: newValues.name,
-        link: newValues.link ?? ''
+        url: newValues.url ?? ''
       }
     });
   } catch (error) {

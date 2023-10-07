@@ -23,7 +23,7 @@ export async function createNewRecipeAction(formValues: z.infer<typeof recipeFor
     await prisma.recipe.create({
       data: {
         name: formValues.name,
-        link: formValues.link ?? '',
+        url: formValues.url ?? '',
         userId: session.user.id
       }
     });

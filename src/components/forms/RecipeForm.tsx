@@ -7,23 +7,18 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createNewRecipeAction } from '@/actions/createNewRecipe';
-import { Prisma } from '@prisma/client';
-import { useEffect, useTransition } from 'react';
+import { Recipe } from '@prisma/client';
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateExistingRecipeAction } from '@/actions/updateExistingRecipe';
 
 export const recipeFormSchema = z.object({
   name: z.string().min(1, { message: 'Please add a name for this recipe' }),
-  link: z.string().optional()
+  url: z.string().optional()
 });
 
 export type RecipeFormProps = {
-  recipe?: {
-    id: string;
-    name: string;
-    link: string;
-    userId: string;
-  };
+  recipe?: Recipe;
 };
 
 export default function RecipeForm({ recipe }: RecipeFormProps) {
@@ -34,7 +29,7 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
     resolver: zodResolver(recipeFormSchema),
     defaultValues: {
       name: recipe ? recipe.name : '',
-      link: recipe ? recipe.link : ''
+      url: recipe ? recipe.url ?? '' : ''
     }
   });
 
@@ -54,7 +49,7 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
 
         if (success) {
           console.log('Successfully updated');
-          form.reset({ name: form.getValues().name, link: form.getValues().link });
+          form.reset({ name: form.getValues().name, url: form.getValues().url });
         }
       });
     };
@@ -80,10 +75,10 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
         />
         <FormField
           control={form.control}
-          name="link"
+          name="url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Link to recipe</FormLabel>
+              <FormLabel>Recipe URL</FormLabel>
               <FormControl>
                 <Input type="url" {...field} />
               </FormControl>

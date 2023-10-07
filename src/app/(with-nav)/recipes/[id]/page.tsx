@@ -24,7 +24,6 @@ export default async function RecipePage({ params }: RecipePageProps) {
   if (!recipe) {
     redirect('/recipes');
   }
-  console.log(recipe);
 
   return (
     <div className="flex flex-col gap-8">
