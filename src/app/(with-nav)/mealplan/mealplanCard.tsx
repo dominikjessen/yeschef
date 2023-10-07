@@ -10,6 +10,7 @@ import { Recipe } from '@prisma/client';
 import { HTMLAttributes } from 'react';
 import { EdamamRecipe } from '@/types/edamam';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
+import { saveEdamamRecipeForUserAction } from '@/actions/saveEdamamRecipeForUser';
 
 export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   recipe: Recipe | EdamamRecipe;
@@ -46,6 +47,19 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
       if (newRecipes?.length) {
         getNewRecipeForIndex(index, newRecipes[0]);
       }
+    }
+  }
+
+  // NOTE: I'm showing users this button as a nudge to create account. Should however be disabled if not signed in
+  async function handleRecipeSavedClicked() {
+    if (recipeType !== 'Edamam') return; // Should be impossible, safety net
+
+    try {
+      await saveEdamamRecipeForUserAction(recipe as EdamamRecipe);
+      alert('Recipe saved successfully');
+    } catch (error) {
+      // TODO: This will throw an error if user isn't signed in -> Prompt to sign in
+      alert(error);
     }
   }
 
@@ -110,22 +124,43 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
           <line x1="2" x2="22" y1="12" y2="12" />
         </svg>
       </Button>
-      {recipe.url && (
-        <a
-          href={recipe.url}
-          target="_blank"
-          aria-label="Go to recipe url"
-          className="p-2 h-10 w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path
+      <div className="flex gap-2">
+        {recipe.url && (
+          <a
+            href={recipe.url}
+            target="_blank"
+            aria-label="Go to recipe url"
+            className="p-2 h-10 w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+              />
+            </svg>
+          </a>
+        )}
+        {recipeType === 'Edamam' && (
+          <Button onClick={handleRecipeSavedClicked} variant="icon" size="icon" title="Add to my recipes">
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
-            />
-          </svg>
-        </a>
-      )}
+            >
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+          </Button>
+        )}
+      </div>
+
       <h3 className="line-clamp-2 font-bold text-lg text-center mt-auto">
         {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       </h3>
