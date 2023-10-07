@@ -8,7 +8,7 @@ import { Recipe } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
@@ -79,14 +79,22 @@ export default function Mealplan() {
     }
   }
 
-  function onDragEnd(e: any) {
+  function onDragEnd(e: DragEndEvent) {
     console.log(e);
-    // TODO: reshuffle arrays
+    const fromIndex = +e.active.id; // Assert that this is a number
+    const toIndex = e.over?.id ? +e.over?.id : null;
+
+    if (!toIndex || fromIndex === toIndex) return; // No valid moving done
+
+    // Create a new mealplan for state with new positions (so user can undo)
+    const copiedCurrentMealplan = [...mealplans[current]];
+    const elementToMove = copiedCurrentMealplan.splice(fromIndex, 1)[0];
+    copiedCurrentMealplan.splice(toIndex, 0, elementToMove);
+
+    addNewMealplan(copiedCurrentMealplan);
   }
 
   useEffect(() => {
-    console.log('effect running');
-
     setIsLoading(true);
     const getInitialRecipes = async () => {
       if (useOwnRecipes) {
