@@ -12,6 +12,7 @@ import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, us
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
+import { useEdamamStore } from '@/store/edamamStore';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -20,15 +21,22 @@ export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
   const [useOwnRecipes, setUseOwnRecipes] = useState(false);
 
-  // Zustand store
+  // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
+  const lockStates = useMealplanStore((state) => state.lockStates);
+
   const undo = useMealplanStore((state) => state.undo);
   const redo = useMealplanStore((state) => state.redo);
   const initMealplans = useMealplanStore((state) => state.initMealplans);
   const addNewMealplan = useMealplanStore((state) => state.addRandomMealplan);
   const addOneRecipe = useMealplanStore((state) => state.addOneRecipe);
   const removeOneRecipe = useMealplanStore((state) => state.removeOneRecipe);
+
+  // Zustand edamam store
+  const recipeBacklog = useEdamamStore((state) => state.recipeBacklog);
+  const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
+  const takeFromBacklog = useEdamamStore((state) => state.takeFromBacklog);
 
   // Dndkit
   const sensors = useSensors(
@@ -44,6 +52,19 @@ export default function Mealplan() {
       const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
       if (res.data) {
         addNewMealplan(res.data as Recipe[]);
+      }
+    } else {
+      const newRecipesNeeded = mealplans[current].length - lockStates[current].filter((value) => !!value).length;
+
+      if (newRecipesNeeded <= recipeBacklog.length) {
+        const newRecipes = takeFromBacklog(newRecipesNeeded);
+        addNewMealplan(newRecipes);
+      } else {
+        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+        if (recipes) {
+          addRecipesToBacklog(recipes.slice(newRecipesNeeded));
+          addNewMealplan(recipes.slice(0, newRecipesNeeded));
+        }
       }
     }
   }
@@ -64,6 +85,8 @@ export default function Mealplan() {
   }
 
   useEffect(() => {
+    console.log('effect running');
+
     setIsLoading(true);
     const getInitialRecipes = async () => {
       if (useOwnRecipes) {
@@ -76,6 +99,7 @@ export default function Mealplan() {
         const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] }); // TODO: Remove!!
 
         if (recipes) {
+          addRecipesToBacklog(recipes.slice(INITIAL_NUMBER_OF_RECIPES));
           initMealplans(recipes.slice(0, INITIAL_NUMBER_OF_RECIPES));
         }
       }
@@ -84,7 +108,7 @@ export default function Mealplan() {
     getInitialRecipes().then(() => {
       setIsLoading(false);
     });
-  }, [initMealplans, useOwnRecipes]);
+  }, [initMealplans, useOwnRecipes, addRecipesToBacklog]);
 
   return (
     <>
