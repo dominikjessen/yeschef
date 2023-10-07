@@ -3,7 +3,7 @@
 import { getRandomRecipesAction } from '@/actions/getRandomRecipes';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
+import { cn, isEdamamRecipe } from '@/lib/utils';
 import { Recipe } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import MealplanCard from './mealplanCard';
@@ -13,6 +13,8 @@ import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordin
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -93,7 +95,7 @@ export default function Mealplan() {
   }
 
   function onDragEnd(e: DragEndEvent) {
-    const fromIndex = +e.active.id; // Assert that this is a number
+    const fromIndex = +e.active.id; // NOTE: Number cast only works because I use index for Dndkit items
     const toIndex = e.over?.id ? +e.over?.id : null;
 
     if (!toIndex || fromIndex === toIndex) return; // No valid moving done
@@ -107,7 +109,6 @@ export default function Mealplan() {
   }
 
   useEffect(() => {
-    setIsLoading(true);
     const getInitialRecipes = async () => {
       if (useOwnRecipes) {
         const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
@@ -125,10 +126,13 @@ export default function Mealplan() {
       }
     };
 
-    getInitialRecipes().then(() => {
-      setIsLoading(false);
-    });
-  }, [initMealplans, useOwnRecipes, addRecipesToBacklog]);
+    // Only runs once on page load
+    if (isLoading) {
+      getInitialRecipes().then(() => {
+        setIsLoading(false);
+      });
+    }
+  }, [isLoading, initMealplans, useOwnRecipes, addRecipesToBacklog]);
 
   return (
     <>
@@ -137,6 +141,17 @@ export default function Mealplan() {
           {/* Menu Bar */}
           <div className="border flex gap-8 p-2">
             <span className="grow">Explanation text</span>
+            <div className="flex items-center space-x-2">
+              <span>Use online recipes</span>
+              <Switch
+                id="own-recipes"
+                checked={useOwnRecipes}
+                onCheckedChange={(checked) => setUseOwnRecipes(checked)}
+                aria-label="Toggle internet/own recipes"
+              />
+              <span>Use your recipes</span>
+            </div>
+            <Separator orientation="vertical" />
             <Button variant="icon" size="icon" onClick={handleRandomizeClicked} aria-label="Randomize recipes">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -198,9 +213,9 @@ export default function Mealplan() {
                 {mealplans[current] &&
                   mealplans[current].map((recipe, index) => (
                     <MealplanCard
-                      key={useOwnRecipes ? `${index}-${(recipe as Recipe).id}` : `${index}-${(recipe as EdamamRecipe).uri}`}
+                      key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
                       recipe={recipe}
-                      recipeType={useOwnRecipes ? 'DB' : 'Edamam'}
+                      recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
                       index={index}
                     />
                   ))}
