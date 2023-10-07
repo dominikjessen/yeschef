@@ -19,7 +19,6 @@ export const useEdamamStore = create<EdamamState>()(
           fromFront = state.recipeBacklog.slice(0, takeFromFront);
           return { recipeBacklog: state.recipeBacklog.slice(takeFromFront) };
         });
-        console.log(fromFront);
         return fromFront;
       }
     }),

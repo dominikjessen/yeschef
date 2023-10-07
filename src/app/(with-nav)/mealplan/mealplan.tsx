@@ -76,11 +76,23 @@ export default function Mealplan() {
       if (newRecipe) {
         addOneRecipe(newRecipe[0]);
       }
+    } else {
+      const newRecipesNeeded = 1;
+
+      if (newRecipesNeeded <= recipeBacklog.length) {
+        const newRecipes = takeFromBacklog(newRecipesNeeded);
+        addOneRecipe(newRecipes[0]);
+      } else {
+        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+        if (recipes) {
+          addRecipesToBacklog(recipes.slice(newRecipesNeeded));
+          addOneRecipe(recipes.slice(0, newRecipesNeeded)[0]);
+        }
+      }
     }
   }
 
   function onDragEnd(e: DragEndEvent) {
-    console.log(e);
     const fromIndex = +e.active.id; // Assert that this is a number
     const toIndex = e.over?.id ? +e.over?.id : null;
 
