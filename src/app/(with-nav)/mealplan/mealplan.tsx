@@ -10,12 +10,15 @@ import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
+import { EdamamRecipe } from '@/types/edamam';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
 
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
+  const [useOwnRecipes, setUseOwnRecipes] = useState(false);
 
   // Zustand store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -36,18 +39,22 @@ export default function Mealplan() {
   );
 
   async function handleRandomizeClicked() {
-    const currentIds = mealplans[current].map((recipe) => recipe.id);
-    const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
-    if (res.data) {
-      addNewMealplan(res.data as Recipe[]);
+    if (useOwnRecipes) {
+      const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
+      const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
+      if (res.data) {
+        addNewMealplan(res.data as Recipe[]);
+      }
     }
   }
 
   async function handleAddOneClicked() {
-    const currentIds = mealplans[current].map((recipe) => recipe.id);
-    const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
-    if (newRecipe) {
-      addOneRecipe(newRecipe[0]);
+    if (useOwnRecipes) {
+      const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
+      const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
+      if (newRecipe) {
+        addOneRecipe(newRecipe[0]);
+      }
     }
   }
 
@@ -59,17 +66,25 @@ export default function Mealplan() {
   useEffect(() => {
     setIsLoading(true);
     const getInitialRecipes = async () => {
-      const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
+      if (useOwnRecipes) {
+        const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
 
-      if (res.data) {
-        initMealplans(res.data);
+        if (res.data) {
+          initMealplans(res.data);
+        }
+      } else {
+        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] }); // TODO: Remove!!
+
+        if (recipes) {
+          initMealplans(recipes.slice(0, INITIAL_NUMBER_OF_RECIPES));
+        }
       }
     };
 
     getInitialRecipes().then(() => {
       setIsLoading(false);
     });
-  }, [initMealplans]);
+  }, [initMealplans, useOwnRecipes]);
 
   return (
     <>
@@ -137,7 +152,14 @@ export default function Mealplan() {
             <SortableContext items={mealplans[current].map((_recipe, index) => index)} strategy={horizontalListSortingStrategy}>
               <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
                 {mealplans[current] &&
-                  mealplans[current].map((recipe, index) => <MealplanCard key={`${index}-${recipe.id}`} recipe={recipe} index={index} />)}
+                  mealplans[current].map((recipe, index) => (
+                    <MealplanCard
+                      key={useOwnRecipes ? `${index}-${(recipe as Recipe).id}` : `${index}-${(recipe as EdamamRecipe).uri}`}
+                      recipe={recipe}
+                      recipeType={useOwnRecipes ? 'DB' : 'Edamam'}
+                      index={index}
+                    />
+                  ))}
               </div>
             </SortableContext>
           </DndContext>

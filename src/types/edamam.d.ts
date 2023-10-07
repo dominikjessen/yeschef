@@ -31,6 +31,7 @@ export type EdamamSearchResponse = {
 
 // NOTE: This will depend on included fields and can be larger
 export type EdamamRecipe = {
+  label: string;
   uri: string;
   source: string;
   url: string;

@@ -1,19 +1,20 @@
+import { EdamamRecipe } from '@/types/edamam';
 import { Recipe } from '@prisma/client';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type MealplanState = {
-  mealplans: Recipe[][];
+  mealplans: (Recipe | EdamamRecipe)[][];
   lockStates: boolean[][];
   current: number;
   undo: () => void;
   redo: () => void;
-  initMealplans: (initialMealplan: Recipe[]) => void;
-  addRandomMealplan: (newMealplan: Recipe[]) => void;
+  initMealplans: (initialMealplan: (Recipe | EdamamRecipe)[]) => void;
+  addRandomMealplan: (newMealplan: (Recipe | EdamamRecipe)[]) => void;
   removeOneRecipe: () => void;
-  addOneRecipe: (newRecipe: Recipe) => void;
+  addOneRecipe: (newRecipe: Recipe | EdamamRecipe) => void;
   toggleLockStateAtIndex: (index: number) => void;
-  getNewRecipeForIndex: (index: number, newRecipe: Recipe) => void;
+  getNewRecipeForIndex: (index: number, newRecipe: Recipe | EdamamRecipe) => void;
 };
 
 export const useMealplanStore = create<MealplanState>()(

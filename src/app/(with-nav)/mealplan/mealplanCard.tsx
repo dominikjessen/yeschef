@@ -8,13 +8,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { Recipe } from '@prisma/client';
 import { HTMLAttributes } from 'react';
+import { EdamamRecipe } from '@/types/edamam';
+import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 
 export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
-  recipe: Recipe;
+  recipe: Recipe | EdamamRecipe;
+  recipeType: 'DB' | 'Edamam';
   index: number;
 }
 
-export default function MealplanCard({ recipe, index, className }: MealplanCardProps) {
+export default function MealplanCard({ recipe, index, recipeType, className }: MealplanCardProps) {
   // Zustand store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
@@ -30,11 +33,19 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
   };
 
   async function handleNewRecipeClicked() {
-    const currentIds = mealplans[current].map((recipe) => recipe.id);
-    const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
+    if (recipeType === 'DB') {
+      const currentIds = (mealplans[current] as Recipe[]).map((recipe) => recipe.id);
+      const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
 
-    if (newRecipes?.length) {
-      getNewRecipeForIndex(index, newRecipes[0]);
+      if (newRecipes?.length) {
+        getNewRecipeForIndex(index, newRecipes[0]);
+      }
+    } else if (recipeType === 'Edamam') {
+      const { data: newRecipes } = await getRecipesFromEdamamAction(); // TODO: Remove!!
+
+      if (newRecipes?.length) {
+        getNewRecipeForIndex(index, newRecipes[0]);
+      }
     }
   }
 
@@ -99,11 +110,11 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
           <line x1="2" x2="22" y1="12" y2="12" />
         </svg>
       </Button>
-      {recipe.link && (
+      {recipe.url && (
         <a
-          href={recipe.link}
+          href={recipe.url}
           target="_blank"
-          aria-label="Go to recipe link"
+          aria-label="Go to recipe url"
           className="p-2 h-10 w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -115,7 +126,9 @@ export default function MealplanCard({ recipe, index, className }: MealplanCardP
           </svg>
         </a>
       )}
-      <h3 className="line-clamp-2 font-bold text-lg text-center mt-auto">{recipe.name}</h3>
+      <h3 className="line-clamp-2 font-bold text-lg text-center mt-auto">
+        {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
+      </h3>
     </div>
   );
 }
