@@ -61,11 +61,21 @@ model VerificationToken {
 }
 
 model Recipe {
-  id     String @id @default(uuid())
-  name   String
-  link   String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  id          String             @id @default(uuid())
+  name        String
+  link        String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  ingredients RecipeIngredient[]
 
   @@index([userId])
+}
+
+model RecipeIngredient {
+  id             String @id @default(uuid())
+  fullIngredient String
+  recipe         Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId       String
+
+  @@index([recipeId])
 }
