@@ -63,7 +63,7 @@ model VerificationToken {
 model Recipe {
   id          String             @id @default(uuid())
   name        String
-  link        String
+  url         String
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   ingredients RecipeIngredient[]
