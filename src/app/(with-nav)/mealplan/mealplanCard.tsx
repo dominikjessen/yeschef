@@ -11,6 +11,7 @@ import { HTMLAttributes } from 'react';
 import { EdamamRecipe } from '@/types/edamam';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { saveEdamamRecipeForUserAction } from '@/actions/saveEdamamRecipeForUser';
+import { useEdamamStore } from '@/store/edamamStore';
 
 export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   recipe: Recipe | EdamamRecipe;
@@ -19,12 +20,20 @@ export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default function MealplanCard({ recipe, index, recipeType, className }: MealplanCardProps) {
-  // Zustand store
+  // Mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
   const lockStates = useMealplanStore((state) => state.lockStates);
+  const useOwnRecipes = useMealplanStore((state) => state.useOwnRecipes);
+
   const toggleLockStateAtIndex = useMealplanStore((state) => state.toggleLockStateAtIndex);
   const getNewRecipeForIndex = useMealplanStore((state) => state.getNewRecipeForIndex);
+
+  // Edamam store
+  const recipeBacklog = useEdamamStore((state) => state.recipeBacklog);
+
+  const takeFromBacklog = useEdamamStore((state) => state.takeFromBacklog);
+  const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
 
   // Dndkit
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({ id: index });
@@ -33,20 +42,24 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
     transition
   };
 
-  // TODO: this actually needs to depend on what current user selection for toggle is
   async function handleNewRecipeClicked() {
-    if (recipeType === 'DB') {
+    if (useOwnRecipes) {
       const currentIds = (mealplans[current] as Recipe[]).map((recipe) => recipe.id);
       const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
 
       if (newRecipes?.length) {
         getNewRecipeForIndex(index, newRecipes[0]);
       }
-    } else if (recipeType === 'Edamam') {
-      const { data: newRecipes } = await getRecipesFromEdamamAction(); // TODO: Remove!!
-
-      if (newRecipes?.length) {
+    } else {
+      if (1 <= recipeBacklog.length) {
+        const newRecipes = takeFromBacklog(1);
         getNewRecipeForIndex(index, newRecipes[0]);
+      } else {
+        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+        if (recipes) {
+          addRecipesToBacklog(recipes.slice(1));
+          getNewRecipeForIndex(index, recipes.slice(0, 1)[0]);
+        }
       }
     }
   }

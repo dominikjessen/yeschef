@@ -21,12 +21,12 @@ const INITIAL_NUMBER_OF_RECIPES = 5;
 
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
-  const [useOwnRecipes, setUseOwnRecipes] = useState(false);
 
   // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
   const lockStates = useMealplanStore((state) => state.lockStates);
+  const useOwnRecipes = useMealplanStore((state) => state.useOwnRecipes);
 
   const undo = useMealplanStore((state) => state.undo);
   const redo = useMealplanStore((state) => state.redo);
@@ -34,6 +34,7 @@ export default function Mealplan() {
   const addNewMealplan = useMealplanStore((state) => state.addRandomMealplan);
   const addOneRecipe = useMealplanStore((state) => state.addOneRecipe);
   const removeOneRecipe = useMealplanStore((state) => state.removeOneRecipe);
+  const setUseOwnRecipes = useMealplanStore((state) => state.setOwnRecipes);
 
   // Zustand edamam store
   const recipeBacklog = useEdamamStore((state) => state.recipeBacklog);

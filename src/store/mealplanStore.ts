@@ -7,6 +7,7 @@ type MealplanState = {
   mealplans: (Recipe | EdamamRecipe)[][];
   lockStates: boolean[][];
   current: number;
+  useOwnRecipes: boolean;
   undo: () => void;
   redo: () => void;
   initMealplans: (initialMealplan: (Recipe | EdamamRecipe)[]) => void;
@@ -15,6 +16,7 @@ type MealplanState = {
   addOneRecipe: (newRecipe: Recipe | EdamamRecipe) => void;
   toggleLockStateAtIndex: (index: number) => void;
   getNewRecipeForIndex: (index: number, newRecipe: Recipe | EdamamRecipe) => void;
+  setOwnRecipes: (checked: boolean) => void;
 };
 
 export const useMealplanStore = create<MealplanState>()(
@@ -23,9 +25,11 @@ export const useMealplanStore = create<MealplanState>()(
       mealplans: [],
       lockStates: [],
       current: 0,
+      useOwnRecipes: false,
       undo: () => set((state) => ({ current: state.current - 1 })),
       redo: () => set((state) => ({ current: state.current + 1 })),
-      initMealplans: (initialMealplan) => set((state) => ({ mealplans: [initialMealplan], lockStates: [Array(initialMealplan.length).fill(false)] })),
+      initMealplans: (initialMealplan) =>
+        set((_state) => ({ mealplans: [initialMealplan], lockStates: [Array(initialMealplan.length).fill(false)] })),
       addRandomMealplan: (newMealplan) =>
         set((state) => ({
           mealplans: [...state.mealplans, newMealplan],
@@ -55,7 +59,8 @@ export const useMealplanStore = create<MealplanState>()(
             current: state.mealplans.length,
             lockStates: [...state.lockStates, [...state.lockStates[state.lockStates.length - 1]]]
           };
-        })
+        }),
+      setOwnRecipes: (checked) => set((_state) => ({ useOwnRecipes: checked }))
     }),
     { store: 'MealplanStore' }
   )
