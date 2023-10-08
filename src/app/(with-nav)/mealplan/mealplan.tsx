@@ -14,7 +14,7 @@ import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -135,23 +135,25 @@ export default function Mealplan() {
     }
   }, [isLoading, initMealplans, useOwnRecipes, addRecipesToBacklog]);
 
+  function recipeSourceToggleChanged(value: string) {
+    if (value === 'edamam') {
+      setUseOwnRecipes(false);
+    } else if (value === 'db') {
+      setUseOwnRecipes(true);
+    }
+  }
+
   return (
     <>
       {!isLoading && (
         <div className="w-full">
           {/* Menu Bar */}
-          <div className="border flex gap-8 p-2">
+          <div className="border flex items-center gap-8 p-2 h-16">
             <span className="grow">Explanation text</span>
-            <div className="flex items-center space-x-2">
-              <span>Use online recipes</span>
-              <Switch
-                id="own-recipes"
-                checked={useOwnRecipes}
-                onCheckedChange={(checked) => setUseOwnRecipes(checked)}
-                aria-label="Toggle internet/own recipes"
-              />
-              <span>Use your recipes</span>
-            </div>
+            <ToggleButton name="Recipe source" value={useOwnRecipes ? 'db' : 'edamam'} onValueChange={recipeSourceToggleChanged}>
+              <ToggleButtonOption value="edamam">Use online recipes</ToggleButtonOption>
+              <ToggleButtonOption value="db">Use your recipes</ToggleButtonOption>
+            </ToggleButton>
             <Separator orientation="vertical" />
             <Button variant="icon" size="icon" onClick={handleRandomizeClicked} aria-label="Randomize recipes">
               <svg

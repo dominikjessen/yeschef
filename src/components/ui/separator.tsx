@@ -14,7 +14,7 @@ const Separator: React.FC<React.ComponentProps<typeof SeparatorPrimitive.Root>> 
   <SeparatorPrimitive.Root
     decorative={decorative}
     orientation={orientation}
-    className={cn('bg-border', orientation === 'horizontal' ? 'h-[1px]' : 'w-[1px]', className)}
+    className={cn('bg-border', orientation === 'horizontal' ? 'h-[1px] w-full' : 'w-[1px] h-full', className)}
     {...props}
   />
 );

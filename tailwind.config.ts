@@ -8,7 +8,10 @@ const config: Config = {
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        primary: 'hsl(var(--primary))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
+        },
         secondary: 'hsl(var(--secondary))',
         destructive: 'hsl(var(--destructive))',
         border: 'hsl(var(--border))',

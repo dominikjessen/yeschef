@@ -10,6 +10,8 @@
     --primary: 0 100% 71%;
     --secondary: 0 82% 72%;
 
+    --primary-foreground: 0 0% 2%;
+
     --destructive: 0 72% 51%;
 
     --border: 220 13% 91%; /* #e5e7eb */
@@ -24,6 +26,8 @@
 
     --primary: 0 100% 71%;
     --secondary: 0 82% 72%;
+
+    --primary-foreground: 0 20% 99%;
 
     --destructive: 0 72% 51%;
 
