@@ -33,6 +33,7 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
     transition
   };
 
+  // TODO: this actually needs to depend on what current user selection for toggle is
   async function handleNewRecipeClicked() {
     if (recipeType === 'DB') {
       const currentIds = (mealplans[current] as Recipe[]).map((recipe) => recipe.id);
@@ -70,7 +71,7 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
       {...attributes}
       className={cn(className, 'bg-teal-500 flex flex-col items-center gap-8 p-12 h-full cursor-default')}
     >
-      <Button variant="icon" size="icon" onClick={handleNewRecipeClicked} aria-label="Get new random recipe">
+      <Button variant="icon" size="icon" onClick={handleNewRecipeClicked} disabled={lockStates[current][index]} aria-label="Get new random recipe">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -87,6 +88,22 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
           <path d="M8 16h.01" />
           <path d="M16 16h.01" />
           <path d="M12 12h.01" />
+        </svg>
+      </Button>
+      <Button ref={setActivatorNodeRef} variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-5 h-5"
+        >
+          <polyline points="18 8 22 12 18 16" />
+          <polyline points="6 8 2 12 6 16" />
+          <line x1="2" x2="22" y1="12" y2="12" />
         </svg>
       </Button>
       <Button variant="icon" size="icon" onClick={() => toggleLockStateAtIndex(index)} aria-label="Lock this recipe">
@@ -107,22 +124,6 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
             />
           </svg>
         )}
-      </Button>
-      <Button ref={setActivatorNodeRef} variant="icon" size="icon" aria-label="Drag handle" {...listeners}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-5 h-5"
-        >
-          <polyline points="18 8 22 12 18 16" />
-          <polyline points="6 8 2 12 6 16" />
-          <line x1="2" x2="22" y1="12" y2="12" />
-        </svg>
       </Button>
       <div className="flex gap-2">
         {recipe.url && (
