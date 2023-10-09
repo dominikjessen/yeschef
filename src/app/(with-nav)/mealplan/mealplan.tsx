@@ -14,6 +14,7 @@ import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
 import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
+import { Tooltip, TooltipArrow, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -164,85 +165,167 @@ export default function Mealplan() {
               <ToggleButtonOption value="db">Use your recipes</ToggleButtonOption>
             </ToggleButton>
             <Separator orientation="vertical" />
-            <Button
-              className={randomizeButtonLoading ? 'animate-rollDice' : ''}
-              variant="icon"
-              size="icon"
-              onClick={handleRandomizeClicked}
-              disabled={randomizeButtonLoading}
-              onAnimationEnd={() => setRandomizeButtonLoading(false)}
-              aria-label="Randomize recipes"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <rect className="w-5 h-5" x="2" y="2" rx="2" ry="2" />
-                <path d="M16 8h.01" />
-                <path d="M8 8h.01" />
-                <path d="M8 16h.01" />
-                <path d="M16 16h.01" />
-                <path d="M12 12h.01" />
-              </svg>
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    className={randomizeButtonLoading ? 'animate-rollDice' : ''}
+                    variant="icon"
+                    size="icon"
+                    onClick={handleRandomizeClicked}
+                    disabled={randomizeButtonLoading}
+                    onAnimationEnd={() => setRandomizeButtonLoading(false)}
+                    aria-label="Randomize recipes"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5"
+                    >
+                      <rect className="w-5 h-5" x="2" y="2" rx="2" ry="2" />
+                      <path d="M16 8h.01" />
+                      <path d="M8 8h.01" />
+                      <path d="M8 16h.01" />
+                      <path d="M16 16h.01" />
+                      <path d="M12 12h.01" />
+                    </svg>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Randomize recipes</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button
-                variant="icon"
-                size="icon"
-                onClick={() => {
-                  setCardsShouldAnimate(false);
-                  undo();
-                }}
-                disabled={current === 0}
-                aria-label="Undo"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                </svg>
-              </Button>
-              <Button
-                variant="icon"
-                size="icon"
-                onClick={() => {
-                  setCardsShouldAnimate(false);
-                  redo();
-                }}
-                disabled={current === mealplans.length - 1}
-                aria-label="Redo"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
-                </svg>
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      variant="icon"
+                      size="icon"
+                      onClick={() => {
+                        setCardsShouldAnimate(false);
+                        undo();
+                      }}
+                      disabled={current === 0}
+                      aria-label="Undo"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                      </svg>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Undo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      variant="icon"
+                      size="icon"
+                      onClick={() => {
+                        setCardsShouldAnimate(false);
+                        redo();
+                      }}
+                      disabled={current === mealplans.length - 1}
+                      aria-label="Redo"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
+                      </svg>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Redo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button
-                variant="icon"
-                size="icon"
-                onClick={() => {
-                  setCardsShouldAnimate(false);
-                  removeOneRecipe();
-                }}
-                disabled={mealplans[current].length <= 1}
-                aria-label="Remove one day"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
-                </svg>
-              </Button>
-              <Button variant="icon" size="icon" onClick={handleAddOneClicked} disabled={mealplans[current].length >= 7} aria-label="Add one day">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      variant="icon"
+                      size="icon"
+                      onClick={() => {
+                        setCardsShouldAnimate(false);
+                        removeOneRecipe();
+                      }}
+                      disabled={mealplans[current].length <= 1}
+                      aria-label="Remove one day"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+                      </svg>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Remove recipe</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      variant="icon"
+                      size="icon"
+                      onClick={handleAddOneClicked}
+                      disabled={mealplans[current].length >= 7}
+                      aria-label="Add one day"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add recipe</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
