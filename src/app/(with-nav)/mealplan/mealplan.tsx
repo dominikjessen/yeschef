@@ -58,6 +58,10 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
     })
   );
 
+  console.log('store', useMealplanStore());
+
+  console.log('mealplans:', mealplans);
+
   function recipeSourceToggleChanged(value: string) {
     if (value === 'edamam') {
       setUseOwnRecipes(false);
@@ -174,7 +178,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
   return (
     <>
-      {!isLoading && mealplans[current] && (
+      {!isLoading && (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
           <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 py-4 h-16', canUseColumns ? 'self-end' : 'self-center my-5')}>
