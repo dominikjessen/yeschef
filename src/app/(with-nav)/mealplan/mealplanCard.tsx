@@ -112,7 +112,7 @@ export default function MealplanCard({
     >
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button
               variant="icon"
               size="icon"
@@ -147,7 +147,7 @@ export default function MealplanCard({
 
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
               {orientation === 'vertical' ? (
                 <svg
@@ -190,7 +190,7 @@ export default function MealplanCard({
 
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button
               variant="icon"
               size="icon"
@@ -240,7 +240,7 @@ export default function MealplanCard({
         {recipe.url && (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <a
                   href={recipe.url}
                   target="_blank"
@@ -272,7 +272,7 @@ export default function MealplanCard({
         {recipeType === 'Edamam' && (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button onClick={handleRecipeSavedClicked} variant="icon" size="icon" title="Add to my recipes">
                   <svg
                     className="h-4 w-4 md:h-5 md:w-5"

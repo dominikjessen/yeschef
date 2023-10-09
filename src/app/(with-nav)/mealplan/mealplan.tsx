@@ -158,7 +158,7 @@ export default function Mealplan() {
 
   return (
     <>
-      {!isLoading && (
+      {!isLoading && mealplans[current] && (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
           <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 py-4 h-16', canUseColumns ? 'self-end' : 'self-center my-5')}>
@@ -173,7 +173,7 @@ export default function Mealplan() {
             <Separator orientation="vertical" className={canUseColumns ? '' : 'ml-1'} />
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button
                     className={randomizeButtonLoading ? 'animate-rollDice' : ''}
                     variant="icon"
@@ -212,7 +212,7 @@ export default function Mealplan() {
             <div className="flex gap-4">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       variant="icon"
                       size="icon"
@@ -243,7 +243,7 @@ export default function Mealplan() {
 
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       variant="icon"
                       size="icon"
@@ -276,7 +276,7 @@ export default function Mealplan() {
             <div className="flex gap-4">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       variant="icon"
                       size="icon"
@@ -307,7 +307,7 @@ export default function Mealplan() {
 
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       variant="icon"
                       size="icon"
