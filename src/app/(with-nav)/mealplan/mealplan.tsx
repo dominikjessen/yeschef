@@ -20,7 +20,11 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
 
-export default function Mealplan() {
+type MealplanProps = {
+  userLoggedIn: boolean;
+};
+
+export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [randomizeButtonLoading, setRandomizeButtonLoading] = useState(false);
   const [cardsShouldAnimate, setCardsShouldAnimate] = useState(true);
@@ -166,7 +170,7 @@ export default function Mealplan() {
               <ToggleButtonOption value="edamam" className="text-xs md:text-sm">
                 Online recipes
               </ToggleButtonOption>
-              <ToggleButtonOption value="db" className="text-xs md:text-sm">
+              <ToggleButtonOption value="db" className="text-xs md:text-sm" disabled={!userLoggedIn}>
                 Your recipes
               </ToggleButtonOption>
             </ToggleButton>
