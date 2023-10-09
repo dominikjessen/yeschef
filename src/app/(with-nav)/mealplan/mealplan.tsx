@@ -58,10 +58,6 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
     })
   );
 
-  console.log('store', useMealplanStore());
-
-  console.log('mealplans:', mealplans);
-
   function recipeSourceToggleChanged(value: string) {
     if (value === 'edamam') {
       setUseOwnRecipes(false);
@@ -141,36 +137,24 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   useEffect(() => {
     const getInitialRecipes = async () => {
       if (useOwnRecipes) {
-        console.log('using own recipes');
-
         const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
 
         if (res.data) {
-          console.log('init mealplan');
           initMealplans(res.data);
         }
       } else {
-        console.log('using online recipes');
-
         const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] }); // TODO: Remove!!
 
         if (recipes) {
-          console.log('init mealplan');
           addRecipesToBacklog(recipes.slice(INITIAL_NUMBER_OF_RECIPES));
           initMealplans(recipes.slice(0, INITIAL_NUMBER_OF_RECIPES));
         }
       }
     };
 
-    console.log('effect');
-
     // Only runs once on page load
     if (isLoading) {
-      console.log('getting recipes');
-
       getInitialRecipes().then(() => {
-        console.log('got recipes');
-
         setIsLoading(false);
       });
     }
