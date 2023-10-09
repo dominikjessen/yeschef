@@ -13,6 +13,10 @@ const config: Config = {
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: 'hsl(var(--secondary))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))'
+        },
         destructive: 'hsl(var(--destructive))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))'

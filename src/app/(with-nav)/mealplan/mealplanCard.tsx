@@ -40,7 +40,7 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
   const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
 
   // Dndkit
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `${index}` }); // NOTE: Needs to be string because of Dndkit and index 0
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `${index}` }); // NOTE: Needs to be string because of Dndkit and index 0
   const style = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -70,6 +70,8 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
     }
   }
 
+  console.log(`Recipe ${index + 1} is dragging: ${isDragging}`);
+
   // NOTE: I'm showing users this button as a nudge to create account. Should however be disabled if not signed in
   async function handleRecipeSavedClicked() {
     if (recipeType !== 'Edamam') return; // Should be impossible, safety net
@@ -94,7 +96,11 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
       animate={{ opacity: 1 }}
       transition={{ delay: 0.1 * index }}
       {...attributes}
-      className={cn(className, 'bg-teal-500 flex flex-col items-center gap-8 p-12 h-full cursor-default')}
+      className={cn(
+        isDragging ? 'z-50' : 'z-auto',
+        'border shadow-sm bg-card text-card-foreground flex flex-col items-center gap-8 py-10 px-4 h-full cursor-default',
+        className
+      )}
     >
       <TooltipProvider>
         <Tooltip>
@@ -246,7 +252,10 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
         )}
       </div>
 
-      <h3 className="line-clamp-2 font-bold text-lg text-center mt-auto">
+      <h3
+        className="line-clamp-3 font-bold text-lg text-center pt-2 mt-auto"
+        title={recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
+      >
         {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       </h3>
     </motion.div>

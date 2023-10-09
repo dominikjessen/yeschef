@@ -156,13 +156,17 @@ export default function Mealplan() {
   return (
     <>
       {!isLoading && (
-        <div className="w-full">
+        <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
-          <div className="border flex items-center gap-8 p-2 h-16">
-            <span className="grow">Explanation text</span>
+          <div className="flex items-center gap-8 py-4 h-16">
+            <span className="grow">Plan your weekly meals!</span>
             <ToggleButton name="Recipe source" value={useOwnRecipes ? 'db' : 'edamam'} onValueChange={recipeSourceToggleChanged}>
-              <ToggleButtonOption value="edamam">Use online recipes</ToggleButtonOption>
-              <ToggleButtonOption value="db">Use your recipes</ToggleButtonOption>
+              <ToggleButtonOption value="edamam" className="text-sm">
+                Online recipes
+              </ToggleButtonOption>
+              <ToggleButtonOption value="db" className="text-sm">
+                Your recipes
+              </ToggleButtonOption>
             </ToggleButton>
             <Separator orientation="vertical" />
             <TooltipProvider>
@@ -330,30 +334,34 @@ export default function Mealplan() {
           </div>
 
           {/* Days of Week header */}
-          <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2 place-items-center`)}>
+          <div className={cn(`grid grid-cols-${mealplans[current].length} py-6 gap-2 place-items-center`)}>
             {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
-              <div key={day}>{day}</div>
+              <div key={day} className="font-bold text-2xl">
+                {day}
+              </div>
             ))}
           </div>
 
           {/* Recipes (dnd area) */}
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext items={mealplans[current].map((_recipe, index) => `${index}`)} strategy={horizontalListSortingStrategy}>
-              <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
-                {mealplans[current] &&
-                  mealplans[current].map((recipe, index) => (
-                    <MealplanCard
-                      key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
-                      recipe={recipe}
-                      recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
-                      index={index}
-                      cardShouldAnimate={cardsShouldAnimate}
-                      onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                    />
-                  ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+          <div className="h-full">
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+              <SortableContext items={mealplans[current].map((_recipe, index) => `${index}`)} strategy={horizontalListSortingStrategy}>
+                <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
+                  {mealplans[current] &&
+                    mealplans[current].map((recipe, index) => (
+                      <MealplanCard
+                        key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                        recipe={recipe}
+                        recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                        index={index}
+                        cardShouldAnimate={cardsShouldAnimate}
+                        onRecipeRandomized={() => setCardsShouldAnimate(true)}
+                      />
+                    ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </div>
         </div>
       )}
     </>

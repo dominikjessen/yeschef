@@ -17,7 +17,7 @@ const ToggleButtonOption = React.forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        'p-2 rounded data-[state=checked]:text-primary-foreground data-[state=checked]:bg-primary data-[state=unchecked]:bg-transparent data-[state=unchecked]:text-foreground',
+        'px-3 py-2 rounded data-[state=checked]:text-primary-foreground data-[state=checked]:bg-primary data-[state=unchecked]:bg-transparent data-[state=unchecked]:text-foreground data-[state=unchecked]:hover:bg-primary/10',
         className
       )}
       {...props}
