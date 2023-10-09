@@ -70,8 +70,6 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
     }
   }
 
-  console.log(`Recipe ${index + 1} is dragging: ${isDragging}`);
-
   // NOTE: I'm showing users this button as a nudge to create account. Should however be disabled if not signed in
   async function handleRecipeSavedClicked() {
     if (recipeType !== 'Edamam') return; // Should be impossible, safety net
@@ -94,11 +92,11 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
       style={style}
       initial={{ opacity }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.1 * index }}
+      transition={{ delay: 0.05 * index }}
       {...attributes}
       className={cn(
         isDragging ? 'z-50' : 'z-auto',
-        'border shadow-sm bg-card text-card-foreground flex flex-col items-center gap-8 py-10 px-4 h-full cursor-default',
+        'rounded-md border shadow-sm bg-card text-card-foreground flex flex-col items-center gap-8 py-10 px-4 cursor-default',
         className
       )}
     >
@@ -197,7 +195,7 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
         </Tooltip>
       </TooltipProvider>
 
-      <div className="flex gap-2">
+      <div className="flex gap-4">
         {recipe.url && (
           <TooltipProvider>
             <Tooltip>
@@ -253,7 +251,7 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
       </div>
 
       <h3
-        className="line-clamp-3 font-bold text-lg text-center pt-2 mt-auto"
+        className="line-clamp-3 font-bold text-lg text-center pt-3 mt-auto"
         title={recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       >
         {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
