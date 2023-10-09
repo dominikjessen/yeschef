@@ -16,6 +16,16 @@ const config: Config = {
         destructive: 'hsl(var(--destructive))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))'
+      },
+      keyframes: {
+        rollDice: {
+          '0%': { transform: 'rotate(0deg)' },
+          '5%': { transform: 'rotate(-20deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        }
+      },
+      animation: {
+        rollDice: 'rollDice 1000ms ease-in-out'
       }
     }
   },

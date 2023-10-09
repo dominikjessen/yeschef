@@ -21,6 +21,7 @@ const INITIAL_NUMBER_OF_RECIPES = 5;
 
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
+  const [randomizeButtonLoading, setRandomizeButtonLoading] = useState(false);
 
   // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -50,6 +51,8 @@ export default function Mealplan() {
   );
 
   async function handleRandomizeClicked() {
+    setRandomizeButtonLoading(true);
+
     if (useOwnRecipes) {
       const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
       const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
@@ -155,7 +158,15 @@ export default function Mealplan() {
               <ToggleButtonOption value="db">Use your recipes</ToggleButtonOption>
             </ToggleButton>
             <Separator orientation="vertical" />
-            <Button variant="icon" size="icon" onClick={handleRandomizeClicked} aria-label="Randomize recipes">
+            <Button
+              className={randomizeButtonLoading ? 'animate-rollDice' : ''}
+              variant="icon"
+              size="icon"
+              onClick={handleRandomizeClicked}
+              disabled={randomizeButtonLoading}
+              onAnimationEnd={() => setRandomizeButtonLoading(false)}
+              aria-label="Randomize recipes"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
