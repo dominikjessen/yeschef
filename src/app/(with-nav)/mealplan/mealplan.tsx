@@ -21,6 +21,7 @@ const INITIAL_NUMBER_OF_RECIPES = 5;
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
   const [randomizeButtonLoading, setRandomizeButtonLoading] = useState(false);
+  const [cardsShouldAnimate, setCardsShouldAnimate] = useState(true);
 
   // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -51,6 +52,7 @@ export default function Mealplan() {
 
   async function handleRandomizeClicked() {
     setRandomizeButtonLoading(true);
+    setCardsShouldAnimate(true);
 
     if (useOwnRecipes) {
       const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
@@ -75,6 +77,8 @@ export default function Mealplan() {
   }
 
   async function handleAddOneClicked() {
+    setCardsShouldAnimate(false);
+
     if (useOwnRecipes) {
       const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
       const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
@@ -98,6 +102,8 @@ export default function Mealplan() {
   }
 
   function onDragEnd(e: DragEndEvent) {
+    setCardsShouldAnimate(false);
+
     const fromIndex = e.active.id;
     const toIndex = e.over ? e.over.id : null;
 
@@ -187,12 +193,30 @@ export default function Mealplan() {
             </Button>
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button variant="icon" size="icon" onClick={undo} disabled={current === 0} aria-label="Undo">
+              <Button
+                variant="icon"
+                size="icon"
+                onClick={() => {
+                  setCardsShouldAnimate(false);
+                  undo();
+                }}
+                disabled={current === 0}
+                aria-label="Undo"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                 </svg>
               </Button>
-              <Button variant="icon" size="icon" onClick={redo} disabled={current === mealplans.length - 1} aria-label="Redo">
+              <Button
+                variant="icon"
+                size="icon"
+                onClick={() => {
+                  setCardsShouldAnimate(false);
+                  redo();
+                }}
+                disabled={current === mealplans.length - 1}
+                aria-label="Redo"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
                 </svg>
@@ -200,7 +224,16 @@ export default function Mealplan() {
             </div>
             <Separator orientation="vertical" />
             <div className="flex gap-4">
-              <Button variant="icon" size="icon" onClick={removeOneRecipe} disabled={mealplans[current].length <= 1} aria-label="Remove one day">
+              <Button
+                variant="icon"
+                size="icon"
+                onClick={() => {
+                  setCardsShouldAnimate(false);
+                  removeOneRecipe();
+                }}
+                disabled={mealplans[current].length <= 1}
+                aria-label="Remove one day"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
                 </svg>
@@ -231,6 +264,8 @@ export default function Mealplan() {
                       recipe={recipe}
                       recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
                       index={index}
+                      cardShouldAnimate={cardsShouldAnimate}
+                      onRecipeRandomized={() => setCardsShouldAnimate(true)}
                     />
                   ))}
               </div>

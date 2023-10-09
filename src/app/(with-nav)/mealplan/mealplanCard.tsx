@@ -8,6 +8,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { Recipe } from '@prisma/client';
 import { HTMLAttributes } from 'react';
+import { motion } from 'framer-motion';
 import { EdamamRecipe } from '@/types/edamam';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { saveEdamamRecipeForUserAction } from '@/actions/saveEdamamRecipeForUser';
@@ -17,9 +18,11 @@ export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   recipe: Recipe | EdamamRecipe;
   recipeType: 'DB' | 'Edamam';
   index: number;
+  cardShouldAnimate: boolean;
+  onRecipeRandomized: () => void;
 }
 
-export default function MealplanCard({ recipe, index, recipeType, className }: MealplanCardProps) {
+export default function MealplanCard({ recipe, index, recipeType, cardShouldAnimate, onRecipeRandomized, className }: MealplanCardProps) {
   // Mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
@@ -43,6 +46,8 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
   };
 
   async function handleNewRecipeClicked() {
+    onRecipeRandomized();
+
     if (useOwnRecipes) {
       const currentIds = (mealplans[current] as Recipe[]).map((recipe) => recipe.id);
       const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
@@ -77,10 +82,16 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
     }
   }
 
+  // Parent decides when opacity animation should play or not
+  const opacity = cardShouldAnimate ? 0 : 1;
+
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
+      initial={{ opacity }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1 * index }}
       {...attributes}
       className={cn(className, 'bg-teal-500 flex flex-col items-center gap-8 p-12 h-full cursor-default')}
     >
@@ -183,6 +194,6 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
       <h3 className="line-clamp-2 font-bold text-lg text-center mt-auto">
         {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       </h3>
-    </div>
+    </motion.div>
   );
 }
