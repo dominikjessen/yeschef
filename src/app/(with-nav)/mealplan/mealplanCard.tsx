@@ -21,9 +21,18 @@ export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   index: number;
   cardShouldAnimate: boolean;
   onRecipeRandomized: () => void;
+  orientation: 'vertical' | 'horizontal';
 }
 
-export default function MealplanCard({ recipe, index, recipeType, cardShouldAnimate, onRecipeRandomized, className }: MealplanCardProps) {
+export default function MealplanCard({
+  recipe,
+  index,
+  recipeType,
+  cardShouldAnimate,
+  onRecipeRandomized,
+  orientation,
+  className
+}: MealplanCardProps) {
   // Mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
   const current = useMealplanStore((state) => state.current);
@@ -96,7 +105,8 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
       {...attributes}
       className={cn(
         isDragging ? 'z-50' : 'z-auto',
-        'rounded-md border shadow-sm bg-card text-card-foreground flex flex-col items-center gap-8 py-10 px-4 cursor-default',
+        orientation === 'vertical' ? 'flex-col gap-8 py-10 px-4' : 'flex-row-reverse gap-2 py-4 px-4',
+        'rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow',
         className
       )}
     >
@@ -118,9 +128,9 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-5 h-5"
+                className="h-4 w-4 md:h-5 md:w-5"
               >
-                <rect className="w-5 h-5" x="2" y="2" rx="2" ry="2" />
+                <rect className="h-4 w-4 md:h-5 md:w-5" x={orientation === 'vertical' ? 2 : 4} y={orientation === 'vertical' ? 2 : 4} rx="2" ry="2" />
                 <path d="M16 8h.01" />
                 <path d="M8 8h.01" />
                 <path d="M8 16h.01" />
@@ -139,20 +149,37 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
         <Tooltip>
           <TooltipTrigger>
             <Button variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <polyline points="18 8 22 12 18 16" />
-                <polyline points="6 8 2 12 6 16" />
-                <line x1="2" x2="22" y1="12" y2="12" />
-              </svg>
+              {orientation === 'vertical' ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4 md:h-5 md:w-5"
+                >
+                  <polyline points="18 8 22 12 18 16" />
+                  <polyline points="6 8 2 12 6 16" />
+                  <line x1="2" x2="22" y1="12" y2="12" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4 md:h-5 md:w-5"
+                >
+                  <polyline points="8 18 12 22 16 18" />
+                  <polyline points="8 6 12 2 16 6" />
+                  <line x1="12" x2="12" y1="2" y2="22" />
+                </svg>
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -171,7 +198,14 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
               aria-label={lockStates[current][index] ? `Unlock recipe ${index + 1}` : `Lock recipe ${index + 1}`}
             >
               {lockStates[current][index] ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-4 w-4 md:h-5 md:w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -179,7 +213,14 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
                   />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-4 w-4 md:h-5 md:w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -195,7 +236,7 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
         </Tooltip>
       </TooltipProvider>
 
-      <div className="flex gap-4">
+      <div className="flex gap-2 lg:gap-4">
         {recipe.url && (
           <TooltipProvider>
             <Tooltip>
@@ -204,9 +245,16 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
                   href={recipe.url}
                   target="_blank"
                   aria-label="Go to recipe url"
-                  className="p-2 h-10 w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
+                  className="h-6 w-6 md:h-9 md:w-9 lg:h-10 lg:w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-4 h-4 md:w-5 md:h-5"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -227,7 +275,7 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
               <TooltipTrigger>
                 <Button onClick={handleRecipeSavedClicked} variant="icon" size="icon" title="Add to my recipes">
                   <svg
-                    className="w-5 h-5"
+                    className="h-4 w-4 md:h-5 md:w-5"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -251,7 +299,10 @@ export default function MealplanCard({ recipe, index, recipeType, cardShouldAnim
       </div>
 
       <h3
-        className="line-clamp-3 font-bold text-lg text-center pt-3 mt-auto"
+        className={cn(
+          orientation === 'vertical' ? 'text-center pt-3 mt-auto line-clamp-3' : 'grow line-clamp-2 mr-1',
+          'font-semibold text-sm xl:text-lg'
+        )}
         title={recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       >
         {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}

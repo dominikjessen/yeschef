@@ -9,20 +9,23 @@ import { useEffect, useState } from 'react';
 import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
 import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
-import { Tooltip, TooltipArrow, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import useMediaQuery from '@/hooks/useMediaQuery';
 
-const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
 
 export default function Mealplan() {
   const [isLoading, setIsLoading] = useState(true);
   const [randomizeButtonLoading, setRandomizeButtonLoading] = useState(false);
   const [cardsShouldAnimate, setCardsShouldAnimate] = useState(true);
+
+  const canUseColumns = useMediaQuery('(min-width: 768px)'); // This is Tailwind's MD
 
   // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -158,17 +161,16 @@ export default function Mealplan() {
       {!isLoading && (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
-          <div className="flex items-center gap-8 py-4 h-16">
-            <span className="grow">Plan your weekly meals!</span>
+          <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 py-4 h-16', canUseColumns ? 'self-end' : 'self-center my-5')}>
             <ToggleButton name="Recipe source" value={useOwnRecipes ? 'db' : 'edamam'} onValueChange={recipeSourceToggleChanged}>
-              <ToggleButtonOption value="edamam" className="text-sm">
+              <ToggleButtonOption value="edamam" className="text-xs md:text-sm">
                 Online recipes
               </ToggleButtonOption>
-              <ToggleButtonOption value="db" className="text-sm">
+              <ToggleButtonOption value="db" className="text-xs md:text-sm">
                 Your recipes
               </ToggleButtonOption>
             </ToggleButton>
-            <Separator orientation="vertical" />
+            <Separator orientation="vertical" className={canUseColumns ? '' : 'ml-1'} />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
@@ -333,34 +335,41 @@ export default function Mealplan() {
             </div>
           </div>
 
-          {/* Days of Week header */}
-          <div className={cn(`grid grid-cols-${mealplans[current].length} py-6 gap-2 place-items-center`)}>
-            {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
-              <div key={day} className="font-bold text-2xl">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Recipes (dnd area) */}
-          <div className="h-full">
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-              <SortableContext items={mealplans[current].map((_recipe, index) => `${index}`)} strategy={horizontalListSortingStrategy}>
-                <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
-                  {mealplans[current] &&
-                    mealplans[current].map((recipe, index) => (
-                      <MealplanCard
-                        key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
-                        recipe={recipe}
-                        recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
-                        index={index}
-                        cardShouldAnimate={cardsShouldAnimate}
-                        onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                      />
-                    ))}
+          {/* Mealplan */}
+          <div className={canUseColumns ? 'flex flex-col' : 'flex gap-4'}>
+            {/* Days of Week header */}
+            <div className={cn('grid', canUseColumns ? `grid-cols-${mealplans[current].length} place-items-center py-6 gap-2` : 'grid-cols-1 gap-4')}>
+              {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
+                <div key={day} className="font-bold text-2xl">
+                  {canUseColumns ? day : day.charAt(0)}
                 </div>
-              </SortableContext>
-            </DndContext>
+              ))}
+            </div>
+
+            {/* Recipes (dnd area) */}
+            <div className="h-full w-full">
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+                <SortableContext
+                  items={mealplans[current].map((_recipe, index) => `${index}`)}
+                  strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
+                >
+                  <div className={cn('grid touch-none', canUseColumns ? `grid-cols-${mealplans[current].length} gap-2` : 'grid-cols-1 gap-4')}>
+                    {mealplans[current] &&
+                      mealplans[current].map((recipe, index) => (
+                        <MealplanCard
+                          key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                          recipe={recipe}
+                          recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                          index={index}
+                          cardShouldAnimate={cardsShouldAnimate}
+                          onRecipeRandomized={() => setCardsShouldAnimate(true)}
+                          orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                        />
+                      ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
           </div>
         </div>
       )}
