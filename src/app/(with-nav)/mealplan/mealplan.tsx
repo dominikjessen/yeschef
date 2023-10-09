@@ -13,7 +13,6 @@ import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordin
 import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
 import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
-import { Switch } from '@/components/ui/switch';
 import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -99,15 +98,16 @@ export default function Mealplan() {
   }
 
   function onDragEnd(e: DragEndEvent) {
-    const fromIndex = +e.active.id; // NOTE: Number cast only works because I use index for Dndkit items
-    const toIndex = e.over?.id ? +e.over?.id : null;
+    const fromIndex = e.active.id;
+    const toIndex = e.over ? e.over.id : null;
 
-    if (!toIndex || fromIndex === toIndex) return; // No valid moving done
+    if (toIndex === null || fromIndex === toIndex) return; // No valid moving done
 
     // Create a new mealplan for state with new positions (so user can undo)
+    // NOTE: Number casts only works because I use index as string for Dndkit items
     const copiedCurrentMealplan = [...mealplans[current]];
-    const elementToMove = copiedCurrentMealplan.splice(fromIndex, 1)[0];
-    copiedCurrentMealplan.splice(toIndex, 0, elementToMove);
+    const elementToMove = copiedCurrentMealplan.splice(+fromIndex, 1)[0];
+    copiedCurrentMealplan.splice(+toIndex, 0, elementToMove);
 
     addNewMealplan(copiedCurrentMealplan);
   }
@@ -222,7 +222,7 @@ export default function Mealplan() {
 
           {/* Recipes (dnd area) */}
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext items={mealplans[current].map((_recipe, index) => index)} strategy={horizontalListSortingStrategy}>
+            <SortableContext items={mealplans[current].map((_recipe, index) => `${index}`)} strategy={horizontalListSortingStrategy}>
               <div className={cn(`grid grid-cols-${mealplans[current].length} gap-2`)}>
                 {mealplans[current] &&
                   mealplans[current].map((recipe, index) => (

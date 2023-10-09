@@ -36,7 +36,7 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
   const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
 
   // Dndkit
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({ id: index });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `${index}` }); // NOTE: Needs to be string because of Dndkit and index 0
   const style = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -103,7 +103,7 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
           <path d="M12 12h.01" />
         </svg>
       </Button>
-      <Button ref={setActivatorNodeRef} variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
+      <Button variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -119,7 +119,12 @@ export default function MealplanCard({ recipe, index, recipeType, className }: M
           <line x1="2" x2="22" y1="12" y2="12" />
         </svg>
       </Button>
-      <Button variant="icon" size="icon" onClick={() => toggleLockStateAtIndex(index)} aria-label="Lock this recipe">
+      <Button
+        variant="icon"
+        size="icon"
+        onClick={() => toggleLockStateAtIndex(index)}
+        aria-label={lockStates[current][index] ? `Unlock recipe ${index + 1}` : `Lock recipe ${index + 1}`}
+      >
         {lockStates[current][index] ? (
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path
