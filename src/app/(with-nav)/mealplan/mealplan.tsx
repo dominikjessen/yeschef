@@ -51,6 +51,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const takeFromBacklog = useEdamamStore((state) => state.takeFromBacklog);
 
   // Dndkit
+  const [itemDragging, setItemDragging] = useState(false);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -119,6 +120,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
   function onDragEnd(e: DragEndEvent) {
     setCardsShouldAnimate(false);
+    setItemDragging(false);
 
     const fromIndex = e.active.id;
     const toIndex = e.over ? e.over.id : null;
@@ -352,12 +354,18 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
             {/* Recipes (dnd area) */}
             <div className="h-full w-full">
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
                 <SortableContext
                   items={mealplans[current].map((_recipe, index) => `${index}`)}
                   strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
                 >
-                  <div className={cn('grid touch-none', canUseColumns ? `grid-cols-${mealplans[current].length} gap-2` : 'grid-cols-1 gap-4')}>
+                  <div
+                    className={cn(
+                      'grid',
+                      canUseColumns ? `grid-cols-${mealplans[current].length} gap-2` : 'grid-cols-1 gap-4',
+                      itemDragging && 'touch-none'
+                    )}
+                  >
                     {mealplans[current] &&
                       mealplans[current].map((recipe, index) => (
                         <MealplanCard
