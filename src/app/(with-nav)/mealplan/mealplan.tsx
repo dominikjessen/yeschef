@@ -368,6 +368,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                           cardShouldAnimate={cardsShouldAnimate}
                           onRecipeRandomized={() => setCardsShouldAnimate(true)}
                           orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                          userLoggedIn={userLoggedIn}
                         />
                       ))}
                   </div>

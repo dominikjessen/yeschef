@@ -22,6 +22,7 @@ export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   cardShouldAnimate: boolean;
   onRecipeRandomized: () => void;
   orientation: 'vertical' | 'horizontal';
+  userLoggedIn: boolean;
 }
 
 export default function MealplanCard({
@@ -31,6 +32,7 @@ export default function MealplanCard({
   cardShouldAnimate,
   onRecipeRandomized,
   orientation,
+  userLoggedIn,
   className
 }: MealplanCardProps) {
   // Mealplan store
@@ -83,11 +85,10 @@ export default function MealplanCard({
   async function handleRecipeSavedClicked() {
     if (recipeType !== 'Edamam') return; // Should be impossible, safety net
 
-    try {
-      await saveEdamamRecipeForUserAction(recipe as EdamamRecipe);
+    const { success, error } = await saveEdamamRecipeForUserAction(recipe as EdamamRecipe);
+    if (success) {
       alert('Recipe saved successfully');
-    } catch (error) {
-      // TODO: This will throw an error if user isn't signed in -> Prompt to sign in
+    } else {
       alert(error);
     }
   }
@@ -269,7 +270,7 @@ export default function MealplanCard({
             </Tooltip>
           </TooltipProvider>
         )}
-        {recipeType === 'Edamam' && (
+        {recipeType === 'Edamam' && userLoggedIn && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
