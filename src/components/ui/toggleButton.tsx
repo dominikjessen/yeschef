@@ -5,7 +5,9 @@ import React from 'react';
 const ToggleButton = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...props }, ref) => <RadioGroupPrimitive.Root className={cn('flex gap-2 border rounded p-1', className)} {...props} ref={ref} />);
+>(({ className, ...props }, ref) => (
+  <RadioGroupPrimitive.Root className={cn('flex gap-1 md:gap-2 border rounded p-1', className)} {...props} ref={ref} />
+));
 
 ToggleButton.displayName = 'ToggleButton';
 

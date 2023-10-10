@@ -106,7 +106,7 @@ export default function MealplanCard({
       {...attributes}
       className={cn(
         isDragging ? 'z-50' : 'z-auto',
-        orientation === 'vertical' ? 'flex-col gap-8 py-10 px-4' : 'flex-row-reverse gap-2 py-4 px-4',
+        orientation === 'vertical' ? 'flex-col gap-8 py-10 px-4' : 'flex-row-reverse justify-between gap-3 py-4 px-2',
         'rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow',
         className
       )}
@@ -129,9 +129,9 @@ export default function MealplanCard({
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-4 w-4 md:h-5 md:w-5"
+                className="h-5 w-5"
               >
-                <rect className="h-4 w-4 md:h-5 md:w-5" x={orientation === 'vertical' ? 2 : 4} y={orientation === 'vertical' ? 2 : 4} rx="2" ry="2" />
+                <rect className="h-5 w-5" x={2} y={2} rx="2" ry="2" />
                 <path d="M16 8h.01" />
                 <path d="M8 8h.01" />
                 <path d="M8 16h.01" />
@@ -159,7 +159,7 @@ export default function MealplanCard({
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-4 w-4 md:h-5 md:w-5"
+                  className="h-5 w-5"
                 >
                   <polyline points="18 8 22 12 18 16" />
                   <polyline points="6 8 2 12 6 16" />
@@ -174,7 +174,7 @@ export default function MealplanCard({
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-4 w-4 md:h-5 md:w-5"
+                  className="h-5 w-5"
                 >
                   <polyline points="8 18 12 22 16 18" />
                   <polyline points="8 6 12 2 16 6" />
@@ -199,14 +199,7 @@ export default function MealplanCard({
               aria-label={lockStates[current][index] ? `Unlock recipe ${index + 1}` : `Lock recipe ${index + 1}`}
             >
               {lockStates[current][index] ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-4 w-4 md:h-5 md:w-5"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -214,14 +207,7 @@ export default function MealplanCard({
                   />
                 </svg>
               ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-4 w-4 md:h-5 md:w-5"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -248,14 +234,7 @@ export default function MealplanCard({
                   aria-label="Go to recipe url"
                   className="h-6 w-6 md:h-9 md:w-9 lg:h-10 lg:w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-4 h-4 md:w-5 md:h-5"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -276,7 +255,7 @@ export default function MealplanCard({
               <TooltipTrigger asChild>
                 <Button onClick={handleRecipeSavedClicked} variant="icon" size="icon" title="Add to my recipes">
                   <svg
-                    className="h-4 w-4 md:h-5 md:w-5"
+                    className="h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -301,8 +280,8 @@ export default function MealplanCard({
 
       <h3
         className={cn(
-          orientation === 'vertical' ? 'text-center pt-3 mt-auto line-clamp-3' : 'grow line-clamp-2 mr-1',
-          'font-semibold text-sm xl:text-lg'
+          orientation === 'vertical' ? 'text-center pt-3 mt-auto line-clamp-3 text-sm xl:text-lg' : ' text-xs grow line-clamp-2 w-full mr-1',
+          'font-semibold'
         )}
         title={recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
       >

@@ -215,7 +215,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
             </TooltipProvider>
 
             <Separator orientation="vertical" />
-            <div className="flex gap-4">
+            <div className="flex gap-2 md:gap-4">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -279,7 +279,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
               </TooltipProvider>
             </div>
             <Separator orientation="vertical" />
-            <div className="flex gap-4">
+            <div className="flex gap-2 md:gap-4">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
