@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import prisma from '@/lib/prismaClient';
 import { Recipe } from '@prisma/client';
 import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
 
 export type GetRandomRecipesActionResponse = {
   success: boolean;
@@ -32,6 +33,8 @@ export async function getRandomRecipesAction({
 
     const recipes =
       await prisma.$queryRaw`SELECT * FROM Recipe WHERE userId = ${session?.user.id} AND id NOT IN (${resultString}) ORDER BY RAND() LIMIT ${numberOfRecipes}`;
+
+    revalidatePath('/mealplan');
 
     return { success: true, data: recipes as Recipe[], error: null };
   } catch (error) {

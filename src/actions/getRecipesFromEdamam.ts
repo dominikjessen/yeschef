@@ -1,6 +1,7 @@
 'use server';
 
 import { Dish, EdamamRecipe, EdamamSearchResponse, Meal } from '@/types/edamam';
+import { revalidatePath } from 'next/cache';
 
 export type GetEdamamRecipesActionResponse = {
   success: boolean;
@@ -56,11 +57,13 @@ export async function getRecipesFromEdamamAction(
   try {
     const params = getParamsForEdamam(requestOptions);
 
-    const res = await fetch(`${EDAMAM_RECIPE_API_BASEURL}?${params.toString()}`);
+    const res = await fetch(`${EDAMAM_RECIPE_API_BASEURL}?${params.toString()}`, { cache: 'no-store' });
 
     // Get data into shape for return
     const { hits } = (await res.json()) as EdamamSearchResponse;
     const recipes = hits.map((hit) => hit.recipe);
+
+    revalidatePath('/mealplan');
 
     return { success: true, data: recipes as EdamamRecipe[], error: null };
   } catch (error) {
