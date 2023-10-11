@@ -107,7 +107,7 @@ export default function MealplanCard({
       className={cn(
         isDragging ? 'z-50' : 'z-auto',
         orientation === 'vertical' ? 'flex-col gap-8 py-10 px-4' : 'flex-row-reverse justify-between gap-3 py-4 px-2',
-        'rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow',
+        'rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow h-full w-full',
         className
       )}
     >

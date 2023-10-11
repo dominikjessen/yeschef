@@ -342,47 +342,43 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
           </div>
 
           {/* Mealplan */}
-          <div className={canUseColumns ? 'flex flex-col' : 'flex gap-4'}>
+          <div
+            className={cn(
+              'grid gap-2 md:gap-4 place-items-center',
+              canUseColumns
+                ? `grid-cols-${mealplans[current].length}`
+                : `grid-flow-col grid-cols-[repeat(2,fit_content(100%))] grid-rows-${mealplans[current].length}`,
+              itemDragging && 'touch-none'
+            )}
+          >
             {/* Days of Week header */}
-            <div className={cn('grid', canUseColumns ? `grid-cols-${mealplans[current].length} place-items-center py-6 gap-2` : 'grid-cols-1 gap-4')}>
-              {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
-                <div key={day} className="font-bold text-2xl">
-                  {canUseColumns ? day : day.charAt(0)}
-                </div>
-              ))}
-            </div>
+            {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
+              <div key={day} className="font-bold text-base md:text-2xl">
+                {canUseColumns ? day : day.charAt(0)}
+              </div>
+            ))}
 
             {/* Recipes (dnd area) */}
-            <div className="h-full w-full">
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
-                <SortableContext
-                  items={mealplans[current].map((_recipe, index) => `${index}`)}
-                  strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
-                >
-                  <div
-                    className={cn(
-                      'grid',
-                      canUseColumns ? `grid-cols-${mealplans[current].length} gap-2` : 'grid-cols-1 gap-4',
-                      itemDragging && 'touch-none'
-                    )}
-                  >
-                    {mealplans[current] &&
-                      mealplans[current].map((recipe, index) => (
-                        <MealplanCard
-                          key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
-                          recipe={recipe}
-                          recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
-                          index={index}
-                          cardShouldAnimate={cardsShouldAnimate}
-                          onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                          orientation={canUseColumns ? 'vertical' : 'horizontal'}
-                          userLoggedIn={userLoggedIn}
-                        />
-                      ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
+              <SortableContext
+                items={mealplans[current].map((_recipe, index) => `${index}`)}
+                strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
+              >
+                {mealplans[current] &&
+                  mealplans[current].map((recipe, index) => (
+                    <MealplanCard
+                      key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                      recipe={recipe}
+                      recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                      index={index}
+                      cardShouldAnimate={cardsShouldAnimate}
+                      onRecipeRandomized={() => setCardsShouldAnimate(true)}
+                      orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                      userLoggedIn={userLoggedIn}
+                    />
+                  ))}
+              </SortableContext>
+            </DndContext>
           </div>
         </div>
       )}
