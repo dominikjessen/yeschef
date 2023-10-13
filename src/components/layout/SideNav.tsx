@@ -9,7 +9,7 @@ import { Session } from 'next-auth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import AccountDropdown from './AccountDropdown';
 
-export function SideNav({ session, headerClassName, className }: { session: Session | null; headerClassName?: string; className?: string }) {
+export function SideNav({ session, headerClassName }: { session: Session | null; headerClassName?: string }) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const pathName = usePathname();
@@ -40,6 +40,7 @@ export function SideNav({ session, headerClassName, className }: { session: Sess
           'h-screen w-full sticky top-0 bg-background border-r py-2 flex flex-col items-center z-30 transition duration-300 ease-in-out',
           // Layout dependent styles
           'hidden md:flex col-span-1 row-span-2',
+          // Mobile menu fixed outside of grid
           mobileMenuOpen ? 'fixed z-50 flex w-4/6 shadow py-10' : ''
         )}
       >
