@@ -35,6 +35,7 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))'
         },
         destructive: 'hsl(var(--destructive))',
+        inactive: 'hsl(var(--inactive))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))'
       },
