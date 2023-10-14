@@ -8,6 +8,8 @@ import { Button } from '../ui/button';
 import { Session } from 'next-auth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import AccountDropdown from './AccountDropdown';
+import Logo from '/public/YesChef_Logo.svg';
+import Image from 'next/image';
 
 export function SideNav({ session, headerClassName }: { session: Session | null; headerClassName?: string }) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -181,7 +183,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </Button>
-        <h2>Yes, Chef!</h2>
+        <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width / 2.5} height={Logo.height / 2.5} />
         {session ? (
           <AccountDropdown session={session} />
         ) : (

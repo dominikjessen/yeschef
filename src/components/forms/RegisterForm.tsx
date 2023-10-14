@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '../ui/checkbox';
+import Logo from '/public/YesChef_Logo.svg';
+import Image from 'next/image';
 
 type RegisterFormProps = {
   providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null;
@@ -39,9 +41,9 @@ export default function RegisterForm({ providers }: RegisterFormProps) {
   }
 
   return (
-    <div className="max-w-md w-full flex flex-col px-12 py-20 border rounded-xl shadow-lg bg-background">
-      <div>Yes, Chef!</div>
-      <h2 className="font-bold text-2xl mt-4">Register</h2>
+    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-background">
+      <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width} height={Logo.height} className="self-center" />
+      <h2 className="font-bold text-2xl mt-12">Register</h2>
       <span className="mt-4">
         Already have an account?{' '}
         <Link href="/login" className="text-foreground/70 hover:text-foreground/60">

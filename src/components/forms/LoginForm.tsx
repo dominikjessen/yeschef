@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ClientSafeProvider, LiteralUnion, signIn } from 'next-auth/react';
 import { Button } from '../ui/button';
 import { BuiltInProviderType } from 'next-auth/providers/index';
+import Logo from '/public/YesChef_Logo.svg';
+import Image from 'next/image';
 
 type LoginFormProps = {
   providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null;
@@ -13,9 +15,9 @@ export default function LoginForm({ providers }: LoginFormProps) {
   const googleProvider = providers?.google;
 
   return (
-    <div className="max-w-md w-full flex flex-col px-12 py-20 border rounded-xl shadow-lg bg-background">
-      <div>Yes, Chef!</div>
-      <h2 className="font-bold text-2xl mt-4">Sign in</h2>
+    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-background">
+      <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width} height={Logo.height} className="self-center" />
+      <h2 className="font-bold text-2xl mt-12">Sign in</h2>
       <span className="mt-4">
         No account yet?{' '}
         <Link href="/register" className="text-foreground/70 hover:text-foreground/60">
