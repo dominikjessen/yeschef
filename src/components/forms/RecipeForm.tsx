@@ -67,7 +67,7 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
             <FormItem>
               <FormLabel>Recipe name (required)</FormLabel>
               <FormControl>
-                <Input type="text" {...field} />
+                <Input type="text" {...field} className="w-full md:w-1/2" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,7 +80,7 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
             <FormItem>
               <FormLabel>Recipe URL</FormLabel>
               <FormControl>
-                <Input type="url" {...field} />
+                <Input type="url" {...field} className="w-full md:w-1/2" />
               </FormControl>
               <FormMessage />
             </FormItem>
