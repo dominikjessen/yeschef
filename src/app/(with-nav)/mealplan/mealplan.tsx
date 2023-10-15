@@ -167,7 +167,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
       {!isLoading && (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
-          <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 py-4 h-16', canUseColumns ? 'self-end' : 'self-center my-5')}>
+          <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 pb-8 h-16', canUseColumns ? 'self-end' : 'self-center my-5')}>
             <ToggleButton name="Recipe source" value={useOwnRecipes ? 'db' : 'edamam'} onValueChange={recipeSourceToggleChanged}>
               <ToggleButtonOption value="edamam" className="text-xs md:text-sm">
                 Online recipes

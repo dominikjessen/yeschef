@@ -81,7 +81,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
           </Button>
         )}
 
-        <div className="flex flex-col gap-4 px-4 py-10">
+        <div className="flex flex-col gap-4 px-4 py-7">
           <Link href="/mealplan">
             <Button
               onClick={closeMenu}
