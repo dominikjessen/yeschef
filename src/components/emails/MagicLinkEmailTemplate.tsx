@@ -60,8 +60,8 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                     </tr>
 
                     <tr>
-                      <td align="left" valign="top" style={{ padding: '40px 0px', backgroundColor: '#ffffff' }} dir="ltr">
-                        <p style={{ fontSize: '16px', lineHeight: '24px', marginBottom: '20px' }}>
+                      <td align="left" valign="top" style={{ padding: '0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
+                        <p style={{ fontSize: '16px', lineHeight: '24px' }}>
                           Click the button below or use the full link provided to sign in to {host}.
                         </p>
                       </td>
@@ -97,20 +97,25 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                     </tr>
 
                     <tr>
-                      <td
-                        align="left"
-                        valign="top"
-                        style={{ padding: '40px 0px', backgroundColor: '#ffffff', fontSize: '16px', lineHeight: '24px' }}
-                        dir="ltr"
-                      >
-                        <p style={{ fontSize: '16px', lineHeight: '24px', marginBottom: '20px' }}>
-                          If you did not request to sign in, please ignore this message.
-                        </p>
+                      <td align="left" valign="top" style={{ padding: '0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
+                        <a href={url} style={{ fontSize: '14px', lineHeight: '20px' }}>
+                          {url}
+                        </a>
                       </td>
                     </tr>
 
                     <tr>
                       <td align="center" valign="top" style={{ paddingTop: 20, backgroundColor: '#ffffff' }} dir="ltr"></td>
+                    </tr>
+
+                    <tr>
+                      <td align="left" valign="top" style={{ padding: '0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
+                        <p style={{ fontSize: '16px', lineHeight: '24px' }}>If you did not request to sign in, please ignore this message.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center" valign="top" style={{ paddingTop: 40, backgroundColor: '#ffffff' }} dir="ltr"></td>
                     </tr>
                   </table>
 
@@ -125,17 +130,9 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                     role="presentation"
                   >
                     <tr>
-                      <td align="center" valign="top" style={{ paddingTop: 40, backgroundColor: '#ffffff' }} dir="ltr"></td>
-                    </tr>
-
-                    <tr>
                       <td align="center" valign="top" style={{ paddingTop: '40px 0px' }} dir="ltr">
                         <p style={{ fontSize: '14px', lineHeight: '20px' }}>This email was sent to {userEmail}.</p>
                       </td>
-                    </tr>
-
-                    <tr>
-                      <td align="center" valign="top" style={{ paddingTop: 40, backgroundColor: '#ffffff' }} dir="ltr"></td>
                     </tr>
 
                     <tr>
@@ -150,7 +147,7 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                       </td>
                     </tr>
                     <tr>
-                      <td align="center" valign="top" style={{ paddingTop: 40, backgroundColor: '#ffffff' }} dir="ltr"></td>
+                      <td align="center" valign="top" style={{ paddingTop: 40 }} dir="ltr"></td>
                     </tr>
                   </table>
                 </td>
