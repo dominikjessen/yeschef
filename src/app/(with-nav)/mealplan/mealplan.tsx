@@ -67,29 +67,70 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
     }
   }
 
+  async function getNewRecipesFromDB() {
+    const currentIds = mealplans[current].reduce<string[]>((filtered, current) => {
+      if (!isEdamamRecipe(current)) {
+        filtered = [...filtered, current.id];
+      }
+      return filtered;
+    }, []);
+
+    const recipesNeeded = mealplans[current].length - lockStates[current].filter(Boolean).length;
+    const res = await getRandomRecipesAction({ numberOfRecipes: recipesNeeded, currentRecipes: currentIds });
+
+    if (res.data) {
+      // Take lock states into account
+      const newRecipes = mealplans[current].map((recipe, index) => {
+        if (lockStates[current][index]) {
+          return recipe;
+        }
+        return res.data?.pop();
+      });
+      addNewMealplan(newRecipes as (Recipe | EdamamRecipe)[]);
+    }
+  }
+
+  async function getNewRecipesFromEdamam() {
+    const newRecipesNeeded = mealplans[current].length - lockStates[current].filter(Boolean).length;
+
+    if (newRecipesNeeded <= recipeBacklog.length) {
+      const backlogRecipes = takeFromBacklog(newRecipesNeeded);
+
+      // Take lock states into account
+      const newRecipes = mealplans[current].map((recipe, index) => {
+        if (lockStates[current][index]) {
+          return recipe;
+        }
+        return backlogRecipes.pop();
+      });
+
+      addNewMealplan(newRecipes as (Recipe | EdamamRecipe)[]);
+    } else {
+      const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+      if (recipes) {
+        addRecipesToBacklog(recipes.slice(newRecipesNeeded));
+
+        // Take lock states into account
+        const recipesToAdd = recipes.slice(0, newRecipesNeeded);
+        const newRecipes = mealplans[current].map((recipe, index) => {
+          if (lockStates[current][index]) {
+            return recipe;
+          }
+          return recipesToAdd.pop();
+        });
+        addNewMealplan(newRecipes as (Recipe | EdamamRecipe)[]);
+      }
+    }
+  }
+
   async function handleRandomizeClicked() {
     setRandomizeButtonLoading(true);
     setCardsShouldAnimate(true);
 
     if (useOwnRecipes) {
-      const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
-      const res = await getRandomRecipesAction({ numberOfRecipes: mealplans[current].length, currentRecipes: currentIds });
-      if (res.data) {
-        addNewMealplan(res.data as Recipe[]);
-      }
+      getNewRecipesFromDB();
     } else {
-      const newRecipesNeeded = mealplans[current].length - lockStates[current].filter((value) => !!value).length;
-
-      if (newRecipesNeeded <= recipeBacklog.length) {
-        const newRecipes = takeFromBacklog(newRecipesNeeded);
-        addNewMealplan(newRecipes);
-      } else {
-        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
-        if (recipes) {
-          addRecipesToBacklog(recipes.slice(newRecipesNeeded));
-          addNewMealplan(recipes.slice(0, newRecipesNeeded));
-        }
-      }
+      getNewRecipesFromEdamam();
     }
   }
 
@@ -97,7 +138,13 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
     setCardsShouldAnimate(false);
 
     if (useOwnRecipes) {
-      const currentIds = mealplans[current].map((recipe) => (recipe as Recipe).id);
+      const currentIds = mealplans[current].reduce<string[]>((filtered, current) => {
+        if (!isEdamamRecipe(current)) {
+          filtered = [...filtered, current.id];
+        }
+        return filtered;
+      }, []);
+
       const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
       if (newRecipe) {
         addOneRecipe(newRecipe[0]);
@@ -365,18 +412,21 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                 strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
               >
                 {mealplans[current] &&
-                  mealplans[current].map((recipe, index) => (
-                    <MealplanCard
-                      key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
-                      recipe={recipe}
-                      recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
-                      index={index}
-                      cardShouldAnimate={cardsShouldAnimate}
-                      onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                      orientation={canUseColumns ? 'vertical' : 'horizontal'}
-                      userLoggedIn={userLoggedIn}
-                    />
-                  ))}
+                  mealplans[current].map(
+                    (recipe, index) =>
+                      recipe && (
+                        <MealplanCard
+                          key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                          recipe={recipe}
+                          recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                          index={index}
+                          cardShouldAnimate={cardsShouldAnimate}
+                          onRecipeRandomized={() => setCardsShouldAnimate(true)}
+                          orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                          userLoggedIn={userLoggedIn}
+                        />
+                      )
+                  )}
               </SortableContext>
             </DndContext>
           </div>
