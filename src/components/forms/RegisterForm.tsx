@@ -46,7 +46,7 @@ export default function RegisterForm({ providers }: RegisterFormProps) {
   }
 
   return (
-    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-background">
+    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-white">
       {/* Header */}
       <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width} height={Logo.height} className="self-center" />
       <h2 className="font-bold text-2xl mt-12">Sign up</h2>
@@ -98,7 +98,7 @@ export default function RegisterForm({ providers }: RegisterFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Your email address" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

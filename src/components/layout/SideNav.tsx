@@ -39,7 +39,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         id="menu-drawer"
         tabIndex={menuOpen ? 0 : -1}
         className={cn(
-          'h-screen w-full sticky top-0 bg-background border-r py-2 flex flex-col items-center z-30 transition duration-300 ease-in-out',
+          'h-screen w-full sticky top-0 bg-primary text-foreground py-2 flex flex-col items-center z-30 transition duration-300 ease-in-out',
           // Layout dependent styles
           'hidden md:flex col-span-1 row-span-2',
           // Mobile menu fixed outside of grid
@@ -73,7 +73,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             onClick={() => setMenuOpen(true)}
             variant="unstyled"
             size="unstyled"
-            className={cn('w-10 h-10 rounded-lg hover:bg-foreground/20 transition duration-300 ease-in-out')}
+            className={cn('w-10 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 ">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -88,9 +88,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
               variant="unstyled"
               size="unstyled"
               className={cn(
-                'h-16 p-4 rounded-xl hover:bg-primary/20 justify-start',
+                'h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start',
                 menuOpen ? 'w-full' : 'w-16',
-                pathName === '/mealplan' && 'bg-primary/30'
+                pathName === '/mealplan' && 'bg-secondary/80'
               )}
             >
               <svg
@@ -117,9 +117,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
                 variant="unstyled"
                 size="unstyled"
                 className={cn(
-                  'h-16 p-4 rounded-xl hover:bg-primary/30 justify-start',
+                  'h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start',
                   menuOpen ? 'w-full' : 'w-16',
-                  pathName.includes('recipes') && 'bg-primary/30'
+                  pathName.includes('recipes') && 'bg-secondary/80'
                 )}
               >
                 <svg
@@ -171,7 +171,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         </div>
       </aside>
 
-      <header className={cn('sticky top-0 z-40 py-2 bg-background/90 backdrop-blur border-b flex justify-between items-center', headerClassName)}>
+      <header className={cn('sticky top-0 z-40 py-2 bg-white backdrop-blur border-b flex justify-between items-center', headerClassName)}>
         {/* Mobile menu button */}
         <Button
           onClick={openMenuMobile}

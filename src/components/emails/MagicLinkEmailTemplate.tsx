@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-head-element */
 import * as React from 'react';
 import Logo from '/public/YesChef_Logo.svg';

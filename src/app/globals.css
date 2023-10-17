@@ -4,51 +4,61 @@
 
 @layer base {
   :root {
-    --background: 0 20% 99%;
-    --foreground: 0 0% 2%;
+    --background: 24 33% 97%; /*#FAF7F5 */
 
-    --primary: 0 100% 71%;
-    --primary-foreground: 0 0% 2%;
+    --foreground: 30 40% 2%; /*#070503 */
+    --foreground-lighter: 23 10% 15%; /*#2A2522 */
 
-    --secondary: 0 82% 72%;
+    --primary: 23 90% 59%; /*#F58238 */
+    --primary-foreground: 30 40% 2%; /*#070503 */
 
-    --card: 0 20% 95%;
-    --card-foreground: 0 0% 2%;
+    --secondary: 23 98% 81%; /*#FEC4A0 */
+    --secondary-foreground: 30 40% 2%; /*#070503 */
 
-    --popover: 0 20% 99%;
+    --card: 0 0% 100%; /*#FFFFFF */
+    --card-foreground: 30 40% 2%; /*#070503 */
 
-    --accent: 0 0% 2%;
+    --popover: 23 98% 81%; /*#FEC4A0 */
 
-    --destructive: 0 72% 51%;
-    --inactive: 218 3% 65%;
+    --accent: 23 90% 59%; /*#F58238 */
 
-    --border: 220 13% 91%; /* #e5e7eb */
-    --input: 220 13% 91%; /* #e5e7eb */
-    --ring: 224 71.4% 4.1%; /* #030712 */
+    --destructive: 0 72% 55%; /*#DF3A3A */
+
+    --inactive: 30 40% 25%;
+    --inactive-recipes: 27 6% 30%;
+
+    --border: 23 13% 91%; /* #EBE7E5 */
+    --input: 23 13% 91%; /* #EBE7E5 */
+    --ring: 23 50% 4%; /* #0F0905 */
   }
 
   /* TODO: Dark mode colors */
   .dark {
-    --background: 0 20% 99%;
-    --foreground: 0 0% 2%;
+    --background: 24 33% 97%; /*#FAF7F5 */
 
-    --primary: 0 100% 71%;
-    --primary-foreground: 0 20% 99%;
+    --foreground: 30 40% 2%; /*#070503 */
+    --foreground-lighter: 30 40% 15%; /*#262626 */
 
-    --secondary: 0 82% 72%;
+    --primary: 23 90% 59%; /*#F58238 */
+    --primary-foreground: 30 40% 2%; /*#070503 */
 
-    --card: 0 20% 95%;
-    --card-foreground: 0 0% 2%;
+    --secondary: 23 98% 81%; /*#FEC4A0 */
+    --secondary-foreground: 30 40% 2%; /*#070503 */
 
-    --popover: 0 20% 99%;
+    --card: 0 0% 100%; /*#FFFFFF */
+    --card-foreground: 30 40% 2%; /*#070503 */
 
-    --accent: 0 0% 2%;
+    --popover: 23 98% 81%; /*#FEC4A0 */
 
-    --destructive: 0 72% 51%;
-    --inactive: 218 3% 65%;
+    --accent: 23 90% 59%; /*#F58238 */
 
-    --border: 220 13% 91%; /* #e5e7eb */
-    --input: 220 13% 91%; /* #e5e7eb */
-    --ring: 224 71.4% 4.1%; /* #030712 */
+    --destructive: 0 72% 55%; /*#DF3A3A */
+
+    --inactive: 218 3% 65%; /*#A3A5A8 */
+    --inactive-recipes: 27 6% 30%;
+
+    --border: 23 13% 91%; /* #EBE7E5 */
+    --input: 23 13% 91%; /* #EBE7E5 */
+    --ring: 23 50% 4%; /* #0F0905 */
   }
 }

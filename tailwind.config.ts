@@ -22,7 +22,10 @@ const config: Config = {
     extend: {
       colors: {
         background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        foreground: {
+          DEFAULT: 'hsl(var(--foreground))',
+          lighter: 'hsl(var(--foreground-lighter))'
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
@@ -35,7 +38,10 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))'
         },
         destructive: 'hsl(var(--destructive))',
-        inactive: 'hsl(var(--inactive))',
+        inactive: {
+          DEFAULT: 'hsl(var(--inactive))',
+          recipes: 'hsl(var(--inactive-recipes))'
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))'
       },

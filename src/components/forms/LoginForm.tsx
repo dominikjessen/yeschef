@@ -39,7 +39,7 @@ export default function LoginForm({ providers }: LoginFormProps) {
   }
 
   return (
-    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-background">
+    <div className="max-w-md w-full flex flex-col px-12 pt-8 pb-12 border rounded-xl shadow-lg bg-white">
       <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width} height={Logo.height} className="self-center" />
       <h2 className="font-bold text-2xl mt-12">Sign in</h2>
       <span className="mt-4">
@@ -89,7 +89,7 @@ export default function LoginForm({ providers }: LoginFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Your email address" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -9,8 +9,8 @@ import RecipeCard from './RecipeCard';
 
 function NoRecipes() {
   return (
-    <div className="p-10 md:p-16 bg-primary/5 rounded-xl flex flex-col gap-10 md:gap-16 items-center">
-      <div className="flex gap-4 md:gap-8 text-inactive">
+    <div className="max-w-2xl mx-auto p-10 md:p-16 bg-primary/10 rounded-xl flex flex-col gap-10 md:gap-16 items-center">
+      <div className="flex gap-4 md:gap-8 text-inactive-recipes stroke-foreground-lighter/80">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -72,7 +72,7 @@ function NoRecipes() {
           <path d="M16 17H3" />
         </svg>
       </div>
-      <p className="w-full lg:w-1/2 xl:w-1/3 text-foreground/50 font-bold text-base md:text-xl text-center leading-relaxed">
+      <p className="w-full text-inactive-recipes font-bold text-base md:text-xl text-center leading-relaxed">
         You have not created any recipes yet, add all your fan favorites now!
       </p>
     </div>
@@ -102,7 +102,7 @@ export default async function Recipes() {
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-2 md:gap-4">
-        {userRecipes.length ? userRecipes.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} index={index} />) : <NoRecipes />}
+        {!userRecipes.length ? userRecipes.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} index={index} />) : <NoRecipes />}
       </div>
     </div>
   );
