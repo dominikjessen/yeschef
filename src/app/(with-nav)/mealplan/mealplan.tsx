@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn, isEdamamRecipe } from '@/lib/utils';
 import { Recipe } from '@prisma/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, KeyboardEvent } from 'react';
 import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -16,6 +16,7 @@ import { useEdamamStore } from '@/store/edamamStore';
 import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useMediaQuery from '@/hooks/useMediaQuery';
+import useKeyboardShortcut from '@/hooks/useKeyDown';
 
 const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const INITIAL_NUMBER_OF_RECIPES = 5;
@@ -26,7 +27,7 @@ type MealplanProps = {
 
 export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [randomizeButtonLoading, setRandomizeButtonLoading] = useState(false);
+  const [randomizeOnCooldown, setRandomizeOnCooldown] = useState(false);
   const [cardsShouldAnimate, setCardsShouldAnimate] = useState(true);
 
   const canUseColumns = useMediaQuery('(min-width: 768px)'); // This is Tailwind's MD
@@ -58,6 +59,39 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
       coordinateGetter: sortableKeyboardCoordinates
     })
   );
+
+  // Shortcuts
+  const { flushHeldKeys: flushRandomize } = useKeyboardShortcut(['Space'], handleRandomizeShortcut, { overrideDefault: true });
+  const { flushHeldKeys: flushUndo } = useKeyboardShortcut(['MetaLeft', 'KeyZ'], handleUndoShortcut, { overrideDefault: true });
+  const { flushHeldKeys: flushRedo } = useKeyboardShortcut(['MetaLeft', 'KeyY'], handleRedoShortcut, { overrideDefault: true });
+
+  function handleRandomizeShortcut() {
+    if (randomizeOnCooldown) return;
+
+    handleRandomizeClicked();
+    flushRandomize();
+  }
+
+  function handleUndoShortcut() {
+    if (current === 0) {
+      flushUndo();
+      return;
+    }
+
+    setCardsShouldAnimate(false);
+    undo();
+    flushUndo();
+  }
+
+  function handleRedoShortcut() {
+    if (current === mealplans.length - 1) {
+      flushRedo();
+      return;
+    }
+    setCardsShouldAnimate(false);
+    redo();
+    flushRedo();
+  }
 
   function recipeSourceToggleChanged(value: string) {
     if (value === 'edamam') {
@@ -124,7 +158,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   }
 
   async function handleRandomizeClicked() {
-    setRandomizeButtonLoading(true);
+    setRandomizeOnCooldown(true);
     setCardsShouldAnimate(true);
 
     if (useOwnRecipes) {
@@ -228,12 +262,12 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    className={randomizeButtonLoading ? 'animate-rollDice' : ''}
+                    className={randomizeOnCooldown ? 'animate-rollDice' : ''}
                     variant="icon"
                     size="icon"
                     onClick={handleRandomizeClicked}
-                    disabled={randomizeButtonLoading}
-                    onAnimationEnd={() => setRandomizeButtonLoading(false)}
+                    disabled={randomizeOnCooldown}
+                    onAnimationEnd={() => setRandomizeOnCooldown(false)}
                     aria-label="Randomize recipes"
                   >
                     <svg
