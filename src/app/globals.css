@@ -11,14 +11,17 @@
 
     --primary: 23 90% 59%; /*#F58238 */
     --primary-foreground: 30 40% 2%; /*#070503 */
+    --primary-alt: 16 83% 60%; /*#ED7043 */
 
     --secondary: 23 98% 81%; /*#FEC4A0 */
     --secondary-foreground: 30 40% 2%; /*#070503 */
+    --secondary-alt: 37 57% 90%; /*#F4E9D7 */
 
     --card: 0 0% 100%; /*#FFFFFF */
     --card-foreground: 30 40% 2%; /*#070503 */
 
     --popover: 23 98% 81%; /*#FEC4A0 */
+    --popover-foreground: 30 40% 2%; /*#070503 */
 
     --accent: 23 90% 59%; /*#F58238 */
 

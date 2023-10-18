@@ -32,7 +32,10 @@ const config: Config = {
         },
         secondary: 'hsl(var(--secondary))',
         accent: 'hsl(var(--accent))',
-        popover: 'hsl(var(--popover))',
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))'
+        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'

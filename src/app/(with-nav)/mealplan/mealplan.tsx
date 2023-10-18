@@ -219,7 +219,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
               <ToggleButtonOption value="edamam" className="text-xs md:text-sm">
                 Online recipes
               </ToggleButtonOption>
-              <ToggleButtonOption value="db" className="text-xs md:text-sm" disabled={!userLoggedIn}>
+              <ToggleButtonOption value="db" className="text-xs md:text-sm" disabled={!userLoggedIn} tooltipMessage="Log in to use your recipes">
                 Your recipes
               </ToggleButtonOption>
             </ToggleButton>
