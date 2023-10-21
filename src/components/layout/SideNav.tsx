@@ -171,7 +171,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         </div>
       </aside>
 
-      <header className={cn('sticky top-0 z-40 py-2 bg-white backdrop-blur border-b flex justify-between items-center', headerClassName)}>
+      <header
+        className={cn('max-h-[58px] sticky top-0 z-40 py-2 bg-white backdrop-blur border-b flex justify-between items-center', headerClassName)}
+      >
         {/* Mobile menu button */}
         <Button
           onClick={openMenuMobile}

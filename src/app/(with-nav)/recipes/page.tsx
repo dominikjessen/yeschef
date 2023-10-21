@@ -102,7 +102,7 @@ export default async function Recipes() {
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-2 md:gap-4">
-        {!userRecipes.length ? userRecipes.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} index={index} />) : <NoRecipes />}
+        {userRecipes.length ? userRecipes.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} index={index} />) : <NoRecipes />}
       </div>
     </div>
   );

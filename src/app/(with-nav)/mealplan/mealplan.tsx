@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn, isEdamamRecipe } from '@/lib/utils';
 import { Recipe } from '@prisma/client';
-import { useEffect, useState, KeyboardEvent } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import MealplanCard from './mealplanCard';
 import { useMealplanStore } from '@/store/mealplanStore';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -15,6 +15,8 @@ import { EdamamRecipe } from '@/types/edamam';
 import { useEdamamStore } from '@/store/edamamStore';
 import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Logo from '/public/YesChef_Logo.svg';
+import Image from 'next/image';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import useKeyboardShortcut from '@/hooks/useKeyDown';
 
@@ -24,6 +26,15 @@ const INITIAL_NUMBER_OF_RECIPES = 5;
 type MealplanProps = {
   userLoggedIn: boolean;
 };
+
+function MealplanLoading() {
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+      <Image src={Logo.src} width={Logo.width} height={Logo.height} alt="Yes, Chef! Logo" />
+      <div className="animate-spin border-2 rounded-full w-8 h-8"></div>
+    </div>
+  );
+}
 
 export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -423,47 +434,49 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
           </div>
 
           {/* Mealplan */}
-          <div
-            className={cn(
-              'grid gap-2 md:gap-4 place-items-center',
-              canUseColumns
-                ? `grid-cols-${mealplans[current].length}`
-                : `grid-flow-col grid-cols-[repeat(2,fit_content(100%))] grid-rows-${mealplans[current].length}`,
-              itemDragging && 'touch-none'
-            )}
-          >
-            {/* Days of Week header */}
-            {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
-              <div key={day} className="font-bold text-base md:text-2xl">
-                {canUseColumns ? day : day.charAt(0)}
-              </div>
-            ))}
+          <Suspense fallback={<p>Loading...</p>}>
+            <div
+              className={cn(
+                'grid gap-2 md:gap-4 place-items-center',
+                canUseColumns
+                  ? `grid-cols-${mealplans[current].length}`
+                  : `grid-flow-col grid-cols-[repeat(2,fit_content(100%))] grid-rows-${mealplans[current].length}`,
+                itemDragging && 'touch-none'
+              )}
+            >
+              {/* Days of Week header */}
+              {DAYS_OF_WEEK.slice(0, mealplans[current].length).map((day) => (
+                <div key={day} className="font-bold text-base md:text-2xl">
+                  {canUseColumns ? day : day.charAt(0)}
+                </div>
+              ))}
 
-            {/* Recipes (dnd area) */}
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
-              <SortableContext
-                items={mealplans[current].map((_recipe, index) => `${index}`)}
-                strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
-              >
-                {mealplans[current] &&
-                  mealplans[current].map(
-                    (recipe, index) =>
-                      recipe && (
-                        <MealplanCard
-                          key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
-                          recipe={recipe}
-                          recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
-                          index={index}
-                          cardShouldAnimate={cardsShouldAnimate}
-                          onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                          orientation={canUseColumns ? 'vertical' : 'horizontal'}
-                          userLoggedIn={userLoggedIn}
-                        />
-                      )
-                  )}
-              </SortableContext>
-            </DndContext>
-          </div>
+              {/* Recipes (dnd area) */}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
+                <SortableContext
+                  items={mealplans[current].map((_recipe, index) => `${index}`)}
+                  strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
+                >
+                  {mealplans[current] &&
+                    mealplans[current].map(
+                      (recipe, index) =>
+                        recipe && (
+                          <MealplanCard
+                            key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                            recipe={recipe}
+                            recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                            index={index}
+                            cardShouldAnimate={cardsShouldAnimate}
+                            onRecipeRandomized={() => setCardsShouldAnimate(true)}
+                            orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                            userLoggedIn={userLoggedIn}
+                          />
+                        )
+                    )}
+                </SortableContext>
+              </DndContext>
+            </div>
+          </Suspense>
         </div>
       )}
     </>
