@@ -185,7 +185,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </Button>
-        <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width / 2.5} height={Logo.height / 2.5} />
+        <Link href="/">
+          <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width / 2.5} height={Logo.height / 2.5} />
+        </Link>
         {session ? (
           <AccountDropdown session={session} />
         ) : (
