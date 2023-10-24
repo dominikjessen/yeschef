@@ -28,7 +28,7 @@ export default function DummyMealplanCard({ className }: HTMLAttributes<HTMLDivE
   return (
     <div
       className={cn(
-        'flex-col gap-8 py-10 px-4 rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow h-full w-full',
+        'flex-col gap-1 md:gap-2 lg:gap-4 xl:gap-8 py-3 md:py-4 lg:py-6 xl:py-10 px-2 xl:px-4 rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow h-full w-full',
         className
       )}
     >
@@ -52,7 +52,7 @@ export default function DummyMealplanCard({ className }: HTMLAttributes<HTMLDivE
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-5 w-5"
+                className="h-4 w-4 lg:h-5 lg:w-5"
               >
                 <rect className="h-5 w-5" x={2} y={2} rx="2" ry="2" />
                 <path d="M16 8h.01" />
@@ -74,7 +74,14 @@ export default function DummyMealplanCard({ className }: HTMLAttributes<HTMLDivE
           <TooltipTrigger asChild>
             <Button variant="icon" size="icon" onClick={() => setLocked((prev) => !prev)} aria-label={locked ? `Unlock recipe` : `Lock recipe`}>
               {locked ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-4 w-4 lg:h-5 lg:w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -82,7 +89,14 @@ export default function DummyMealplanCard({ className }: HTMLAttributes<HTMLDivE
                   />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-4 w-4 lg:h-5 lg:w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -98,35 +112,38 @@ export default function DummyMealplanCard({ className }: HTMLAttributes<HTMLDivE
         </Tooltip>
       </TooltipProvider>
 
-      <div className="flex gap-2 lg:gap-4">
-        {recipe.url && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a
-                  href={recipe.url}
-                  target="_blank"
-                  aria-label="Go to recipe url"
-                  className="h-6 w-6 md:h-9 md:w-9 lg:h-10 lg:w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
-                    />
-                  </svg>
-                </a>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Go to recipe</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <a
+              href={recipe.url}
+              target="_blank"
+              aria-label="Go to recipe url"
+              className="h-6 w-6 md:h-9 md:w-9 lg:h-10 lg:w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-4 w-4 lg:h-5 lg:w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                />
+              </svg>
+            </a>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Go to recipe</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
-      <h3 className="font-semibold text-center pt-3 mt-auto line-clamp-3 text-sm xl:text-lg" title={recipe.name}>
+      <h3 className="font-semibold text-center pt-2 xl:pt-3 mt-auto line-clamp-3 text-sm xl:text-lg" title={recipe.name}>
         {recipe.name}
       </h3>
     </div>
