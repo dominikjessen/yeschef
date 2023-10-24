@@ -1,7 +1,8 @@
 <p align="center">
-  <a href="https://yeschef.recipes.com">
+  <a href="https://yeschef.recipes">
+  <img src="/public/YesChef_Logo.svg" alt="Yes, Chef! logo" />
   </a>
-  <h3 align="center">Meal planning shouldn't take more than 5 minutes a week. Yes Chef! will help you create a great menu for the week ahead using all your favorite recipes.</h3>
+  <h3 align="center">Meal planning shouldn't take more than 5 minutes a week. Yes, Chef! will help you create a great menu for the week ahead using all your favorite recipes or inspiring ones from across the web (powered by Edamam's Recipe Search API).</h3>
   <div align="center">
     <h3>Built with</h3>
     <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 64px)); gap: 1rem;">
@@ -22,15 +23,17 @@
   </div>
 </p>
 
-## About Yes Chef!
+## About Yes, Chef!
 
-Yes Chef! is an app to quickly figure out your meal plan for the week from all your favorites (or forgotten favorites). Simply add your recipes to your own little recipe book, start the random generator and you'll have a varied meal plan in no time.
+Yes, Chef! is an app to quickly figure out your meal plan for the week from all your favorites (or forgotten favorites). Simply add your recipes to your own little recipe book, start the random generator and you'll have a varied meal plan in no time. Don't have a treasure trove of great recipes yet? No problem, the tool uses Edamam's Recipe API to help you explore different cuisines and find new favorites.
 
-<a href='https://yeschef.recipes'>Check out Yes Chef! here</a>
+<a href='https://yeschef.recipes'>Check out Yes, Chef! here</a>
 
 ## About the codebase & future work
 
-Yes Chef! started as a little hobby project to both scratch my own itch. I love cooking but am notoriously bad at choosing what to eat for the week taking up too much of my mental space. I wanted to combine this with building a Next.js app that would largely depend on Server Components and the new Server Actions. I also wanted to try out Prisma with a MySQL database on the backend-side of things as well as NextAuth (Auth.js) for authentication. For the meal plan creator itself I wanted to play around with drag & drop and used Atlassian's wonderful beautiful-react-dnd library.
+Yes, Chef! is a small project built to scratch my own itch. I love cooking but am notoriously bad at choosing what to eat for the week taking up too much of my mental space. I wanted to combine this with building a Next.js app that would largely depend on Server Components and the experimental Server Actions. In my opinion they provide a rather simple way of performing logic on the server without having to build and call API routes.
+
+On the backend, I'm using Prisma with a MySQL database as well as NextAuth (Auth.js) for authentication which works well enough despite some supposed issues with the App Router. On the frontend, I wanted to implement drag & drop and used DnDKit as a great library to make dnd simple to implement. I also chose Zustand as a simple state management library over something like Redux (or just using hooks or Context) because it made managing and manipulating state from both the main mealplan component and the individual mealplan cards incredibly simple. I chose to use it for a separate client-side cache for the Edamam Recipe API as well to minimize API calls as much as possible.
 
 ### Product Images
 
