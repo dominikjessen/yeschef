@@ -14,7 +14,7 @@ export default async function Home() {
         <h2 className="text-xl text-foreground/70">
           Use your own recipes or random inspiring recipes from different cuisines to plan your recipes for the whole week.
         </h2>
-        <div className="flex gap-12 mt-4">
+        <div className="flex gap-8 mt-4">
           <Link
             href="/mealplan"
             role="button"
@@ -24,7 +24,7 @@ export default async function Home() {
           </Link>
           <Link
             href="/register"
-            className="rounded-lg h-14 px-12 py-6 border border-border hover:bg-primary hover:text-foreground inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="rounded-lg h-14 px-12 py-6 border border-border hover:bg-foreground hover:text-background inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
             Create free account
           </Link>
