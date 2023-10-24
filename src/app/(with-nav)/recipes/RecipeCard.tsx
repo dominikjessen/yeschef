@@ -14,7 +14,7 @@ export default function RecipeCard({ recipe, index }: { recipe: Recipe; index: n
 
   return (
     <motion.div
-      className="flex justify-between gap-4 items-center border py-4 px-6 rounded-lg bg-card text-card-foreground hover:shadow hover:border-primary/30 hover:bg-primary/30"
+      className="h-20 flex justify-between gap-4 items-center border py-4 px-6 rounded-lg bg-card text-card-foreground hover:shadow hover:border-primary/30 hover:bg-primary/30"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.05 * index }}

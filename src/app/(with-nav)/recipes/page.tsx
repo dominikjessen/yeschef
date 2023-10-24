@@ -96,7 +96,7 @@ export default async function Recipes() {
   return (
     <div className="flex flex-col gap-6 md:gap-8">
       <div className="flex justify-between">
-        <h2 className="font-bold text-2xl">Your recipes</h2>
+        <h2 className="font-bold text-2xl">Your Recipes</h2>
         <Link href="/recipes/new">
           <Button>Add recipe</Button>
         </Link>
