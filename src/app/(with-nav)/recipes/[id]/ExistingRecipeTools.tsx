@@ -15,7 +15,7 @@ export default function ExistingRecipeTools({ session, recipe }: { session: Sess
     if (success) {
       router.push('/recipes');
     } else {
-      console.log(error);
+      console.error(error);
     }
   }
 

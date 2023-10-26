@@ -48,7 +48,6 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
         const { success } = await updateExistingRecipeAction(recipe.id, values);
 
         if (success) {
-          console.log('Successfully updated');
           form.reset({ name: form.getValues().name, url: form.getValues().url });
         }
       });

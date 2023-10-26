@@ -90,7 +90,7 @@ export default async function Recipes() {
   try {
     userRecipes = await prisma.recipe.findMany({ where: { userId: session.user.id }, orderBy: { name: 'asc' } });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   return (
