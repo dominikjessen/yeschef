@@ -87,7 +87,7 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                             lineHeight: '24px',
                             color: '#070503',
                             backgroundColor: '#F58238',
-                            borderRadius: '12px',
+                            borderRadius: '6px',
                             padding: '12px 16px'
                           }}
                         >
