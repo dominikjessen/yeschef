@@ -146,6 +146,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger
+                  aria-label="Log in to manage your recipes"
                   className={cn(
                     'h-16 p-4 rounded-xl hover:bg-primary/10 text-inactive inline-flex items-center justify-start cursor-default',
                     menuOpen ? 'w-full' : 'w-16'
@@ -167,7 +168,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
                   {menuOpen && <span className="text-lg ml-6">Recipes</span>}
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>Sign in to manage your recipes</p>
+                  <p>Log in to manage your recipes</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
