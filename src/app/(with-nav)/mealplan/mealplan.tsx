@@ -256,7 +256,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
   return (
     <>
-      {!isLoading && (
+      {!isLoading && canUseColumns !== undefined && (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
           <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 pb-4 md:pb-8 h-16', canUseColumns ? 'self-end' : 'self-center my-2')}>
