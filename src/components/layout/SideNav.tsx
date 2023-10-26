@@ -49,6 +49,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         {menuOpen ? (
           <Button
             onClick={closeMenu}
+            aria-label="Close menu"
             variant="unstyled"
             size="unstyled"
             className={cn('px-4 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out')}
@@ -71,6 +72,7 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         ) : (
           <Button
             onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
             variant="unstyled"
             size="unstyled"
             className={cn('w-10 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out')}
@@ -82,9 +84,10 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         )}
 
         <div className="flex flex-col gap-4 px-4 py-7">
-          <Link href="/mealplan">
+          <Link href="/mealplan" aria-label="Go to Mealplan page">
             <Button
               onClick={closeMenu}
+              aria-label="Mealplan"
               variant="unstyled"
               size="unstyled"
               className={cn(
@@ -111,9 +114,10 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             </Button>
           </Link>
           {session ? (
-            <Link href="/recipes">
+            <Link href="/recipes" aria-label="Go to Recipes page">
               <Button
                 onClick={closeMenu}
+                aria-label="Recipes"
                 variant="unstyled"
                 size="unstyled"
                 className={cn(
