@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} bg-background text-foreground grid grid-flow-row md:grid-flow-col grid-cols-[min-content_1fr]`}>
         <HeaderWithNav headerClassName="px-4 md:px-10 col-span-2 md:col-span-1" />
         <div className="col-span-2 md:col-span-1 w-full">
-          <main className="px-4 md:px-10 py-4 md:py-8">{children}</main>
+          <main className="px-4 md:px-10 py-4 md:py-8 min-h-[calc(100dvh-58px)]">{children}</main>
           <Footer className="px-4 md:px-10" />
         </div>
       </body>
