@@ -19,7 +19,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
 
   try {
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'Yes Chef! <noreply@yeschef.recipes>',
       to: [identifier],
       subject: `Log in to ${host} via magic link`,
       text: text({ url, host }),
