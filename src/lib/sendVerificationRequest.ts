@@ -31,5 +31,5 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
 }
 
 function text({ url, host }: { url: string; host: string }) {
-  return `Sign in to ${host} by clicking the magic link below.\n${url}\n\nIf you did not mean to login then ignore this email.`;
+  return `Sign in to ${host} by copying the magic link below into your browser.\n${url}\n\nIf you did not mean to login then ignore this email.`;
 }

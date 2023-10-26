@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-head-element */
 import * as React from 'react';
-import Logo from '/public/YesChef_Logo.svg';
 
 interface EmailTemplateProps {
   url: string;
@@ -43,19 +42,23 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                     role="presentation"
                   >
                     <tr>
-                      <td align="left" valign="top" width="100%" style={{ padding: '40px 0px 0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
-                        <a href="https://getmealplan.vercel.app" target="_blank">
-                          <img src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width} height={Logo.height} />
-                        </a>
+                      <td align="left" valign="top" width="100%" style={{ padding: '40px 40px 0px 30px', backgroundColor: '#ffffff' }} dir="ltr">
+                        <img
+                          src="https://raw.githubusercontent.com/dominikjessen/yeschef/main/public/YesChef_Logo_ForEmail.png"
+                          alt="Yes, Chef! Logo"
+                          title="Yes, Chef! Logo"
+                          width="157"
+                          height="78"
+                        />
                       </td>
                     </tr>
 
                     <tr>
-                      <td align="center" valign="top" style={{ paddingTop: 40, backgroundColor: '#ffffff' }} dir="ltr"></td>
+                      <td align="center" valign="top" style={{ paddingTop: 20, backgroundColor: '#ffffff' }} dir="ltr"></td>
                     </tr>
 
                     <tr>
-                      <td align="left" valign="top" style={{ padding: '0px 40px 20px 40px', backgroundColor: '#ffffff' }} dir="ltr">
+                      <td align="left" valign="top" style={{ padding: '0px 40px 0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
                         <h2 className="text-2xl m-0 font-bold">Login to {host} via magic link</h2>
                       </td>
                     </tr>
@@ -82,13 +85,13 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                             textDecoration: 'none',
                             fontSize: '16px',
                             lineHeight: '24px',
-                            color: '#ffffff',
-                            backgroundColor: '#000000',
+                            color: '#070503',
+                            backgroundColor: '#F58238',
                             borderRadius: '12px',
                             padding: '12px 16px'
                           }}
                         >
-                          <span>Sign in</span>
+                          <span>Log in</span>
                         </a>
                       </td>
                     </tr>
@@ -99,7 +102,7 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
 
                     <tr>
                       <td align="left" valign="top" style={{ padding: '0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
-                        <a href={url} style={{ fontSize: '14px', lineHeight: '20px' }}>
+                        <a href={url} style={{ fontSize: '12px', lineHeight: '18px', color: '#F58238' }}>
                           {url}
                         </a>
                       </td>
@@ -111,7 +114,7 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
 
                     <tr>
                       <td align="left" valign="top" style={{ padding: '0px 40px', backgroundColor: '#ffffff' }} dir="ltr">
-                        <p style={{ fontSize: '16px', lineHeight: '24px' }}>If you did not request to sign in, please ignore this message.</p>
+                        <p style={{ fontSize: '16px', lineHeight: '24px' }}>If you did not request to log in, please ignore this message.</p>
                       </td>
                     </tr>
 
