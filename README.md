@@ -39,5 +39,5 @@ On the backend, I'm using Prisma with a MySQL database as well as NextAuth (Auth
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
   <img src="/public/01_YesChef_MealplanPage.png" alt="Mealplan page" />
-  <img src="/public/02_YesChef_RecipesPage.png" alt="Recipes page" />
+  <img src="/public/02_YesChef_RecipePage.png" alt="Recipe page" />
 </div>
