@@ -11,6 +11,7 @@ import { Recipe } from '@prisma/client';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateExistingRecipeAction } from '@/actions/updateExistingRecipe';
+import { useToast } from '@/hooks/useToast';
 
 export const recipeFormSchema = z.object({
   name: z.string().min(1, { message: 'Please add a name for this recipe' }),
@@ -24,6 +25,7 @@ export type RecipeFormProps = {
 export default function RecipeForm({ recipe }: RecipeFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof recipeFormSchema>>({
     resolver: zodResolver(recipeFormSchema),
@@ -45,14 +47,27 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
       if (!Object.keys(form.formState.dirtyFields).length || !recipe) return;
 
       startTransition(async () => {
-        const { success } = await updateExistingRecipeAction(recipe.id, values);
+        const { success, error } = await updateExistingRecipeAction(recipe.id, values);
+
+        if (error) {
+          toast({
+            variant: 'destructive',
+            description: `Something went wrong, please try again.`
+          });
+          return;
+        }
 
         if (success) {
           form.reset({ name: form.getValues().name, url: form.getValues().url });
+          toast({
+            variant: 'success',
+            description: `Successfully updated recipe information.`
+          });
         }
       });
     };
 
+    // This is what gets called onSubmit depending on 'type' of form
     recipe ? handleUpdatedRecipe() : handleNewRecipe();
   }
 
