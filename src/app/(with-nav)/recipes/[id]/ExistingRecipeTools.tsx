@@ -5,24 +5,35 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { deleteRecipeAction } from '@/actions/deleteRecipe';
 import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 export default function ExistingRecipeTools({ recipe }: { recipe: Recipe }) {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   async function deleteRecipe() {
-    const { success, error } = await deleteRecipeAction(recipe);
-    if (success) {
-      router.push('/recipes');
-    } else {
-      console.error(error);
-    }
+    startTransition(async () => {
+      const { success, error } = await deleteRecipeAction(recipe);
+      if (success) {
+        router.push('/recipes');
+      } else {
+        console.error(error);
+      }
+    });
   }
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button size="icon" variant="icon" aria-label="Delete recipe" className="hover:bg-destructive/10 text-destructive" onClick={deleteRecipe}>
+          <Button
+            size="icon"
+            variant="icon"
+            aria-label="Delete recipe"
+            className="hover:bg-destructive/10 text-destructive"
+            onClick={deleteRecipe}
+            disabled={isPending}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
