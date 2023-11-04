@@ -100,7 +100,7 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="self-center">
+        <Button type="submit" className="self-center" disabled={isPending}>
           {recipe ? 'Save changes' : 'Add recipe'}
         </Button>
       </form>
