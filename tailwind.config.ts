@@ -49,6 +49,14 @@ const config: Config = {
         input: 'hsl(var(--input))'
       },
       keyframes: {
+        in: {
+          from: { opacity: '0' },
+          to: { opacity: '1' }
+        },
+        out: {
+          from: { opacity: '1' },
+          to: { opacity: '0' }
+        },
         rollDice: {
           '0%': { transform: 'rotate(0deg)' },
           '5%': { transform: 'rotate(-20deg)' },
@@ -56,6 +64,8 @@ const config: Config = {
         }
       },
       animation: {
+        in: 'in 200ms ease-in-out',
+        out: 'out 200ms ease-in-out',
         rollDice: 'rollDice 1000ms ease-in-out'
       },
       gridTemplateRows: {
