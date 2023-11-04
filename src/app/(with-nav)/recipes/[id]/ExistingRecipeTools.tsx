@@ -1,13 +1,12 @@
 'use client';
 
 import { Recipe } from '@prisma/client';
-import { Session } from 'next-auth';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { deleteRecipeAction } from '@/actions/deleteRecipe';
 import { useRouter } from 'next/navigation';
 
-export default function ExistingRecipeTools({ session, recipe }: { session: Session; recipe: Recipe }) {
+export default function ExistingRecipeTools({ recipe }: { recipe: Recipe }) {
   const router = useRouter();
 
   async function deleteRecipe() {

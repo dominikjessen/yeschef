@@ -50,7 +50,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
         </Link>
         <div className="flex items-center justify-between gap-2">
           <h2 className="font-bold text-2xl">{recipe.name}</h2>
-          <ExistingRecipeTools session={session} recipe={recipe} />
+          <ExistingRecipeTools recipe={recipe} />
         </div>
       </div>
       <RecipeForm recipe={recipe} />
