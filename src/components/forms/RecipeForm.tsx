@@ -38,8 +38,22 @@ export default function RecipeForm({ recipe }: RecipeFormProps) {
   async function onSubmit(values: z.infer<typeof recipeFormSchema>) {
     const handleNewRecipe = () => {
       startTransition(async () => {
-        await createNewRecipeAction(values);
-        router.replace('/recipes');
+        const { success, error } = await createNewRecipeAction(values);
+        if (error) {
+          toast({
+            variant: 'destructive',
+            description: `Something went wrong, please try again.`
+          });
+          return;
+        }
+
+        if (success) {
+          router.replace('/recipes');
+          toast({
+            variant: 'success',
+            description: `Successfully created your recipe.`
+          });
+        }
       });
     };
 
