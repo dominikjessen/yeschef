@@ -6,18 +6,29 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { deleteRecipeAction } from '@/actions/deleteRecipe';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
+import { useToast } from '@/hooks/useToast';
 
 export default function ExistingRecipeTools({ recipe }: { recipe: Recipe }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { toast } = useToast();
 
   async function deleteRecipe() {
     startTransition(async () => {
       const { success, error } = await deleteRecipeAction(recipe);
+      if (error) {
+        toast({
+          variant: 'destructive',
+          description: 'Something went wrong. Please try again.'
+        });
+        return;
+      }
       if (success) {
         router.push('/recipes');
-      } else {
-        console.error(error);
+        toast({
+          variant: 'default', // NOTE: I like UX of default style for deletion but could be success too
+          description: 'Successfully deleted recipe.'
+        });
       }
     });
   }
