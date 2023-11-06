@@ -142,7 +142,7 @@ export const MagicLinkEmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                     <tr>
                       <td align="center" valign="top" className="py-10" dir="ltr">
                         <a
-                          href="https://getmealplan.vercel.app/privacy-policy"
+                          href="https://yeschef.recipes/privacy-policy"
                           target="_blank"
                           style={{ fontSize: '14px', lineHeight: '20px', textDecoration: 'none' }}
                         >
