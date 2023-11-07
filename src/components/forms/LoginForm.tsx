@@ -35,7 +35,7 @@ export default function LoginForm({ providers }: LoginFormProps) {
   });
 
   async function onEmailSubmit(values: z.infer<typeof formSchema>) {
-    await signIn('email', { email: values.email });
+    await signIn('email', { email: values.email, callbackUrl });
   }
 
   return (

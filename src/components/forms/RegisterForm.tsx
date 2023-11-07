@@ -38,7 +38,7 @@ export default function RegisterForm({ providers }: RegisterFormProps) {
 
   //
   async function onEmailSubmit(values: z.infer<typeof formSchema>) {
-    await signIn('email', { email: values.email });
+    await signIn('email', { email: values.email, callbackUrl });
   }
 
   async function signUpWithGoogle() {
