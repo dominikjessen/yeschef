@@ -16,7 +16,7 @@
       <img width="64px" height="64px" src="/public/company-logos/html5-color.svg" alt="HTML5" />
       <img width="64px" height="64px" src="/public/company-logos/css3-color.svg" alt="CSS3" />
       <img width="64px" height="64px" src="/public/company-logos/tailwindcss-color.svg" alt="Tailwind" />
-      <img width="64px" height="64px" src="/public/company-logos/mysql-color.svg" alt="MySQL" />
+      <img width="64px" height="64px" src="/public/company-logos/turso-logomark-aqua.svg" alt="Turso" />
       <img width="64px" height="64px" src="/public/company-logos/prisma-color.svg" alt="Prisma" />
     </div>
 
@@ -33,7 +33,7 @@ Yes, Chef! is an app to quickly figure out your meal plan for the week from all 
 
 Yes, Chef! is a small project built to scratch my own itch. I love cooking but am notoriously bad at choosing what to eat for the week taking up too much of my mental space. I wanted to combine this with building a Next.js app that would largely depend on Server Components and the experimental Server Actions. In my opinion they provide a rather simple way of performing logic on the server without having to build and call API routes.
 
-On the backend, I'm using Prisma with a MySQL database as well as NextAuth (Auth.js) for authentication which works well enough despite some supposed issues with the App Router. On the frontend, I wanted to implement drag & drop and used DnDKit as a great library to make dnd simple to implement. I also chose Zustand as a simple state management library over something like Redux (or just using hooks or Context) because it made managing and manipulating state from both the main mealplan component and the individual mealplan cards incredibly simple. I chose to use it for a separate client-side cache for the Edamam Recipe API as well to minimize API calls as much as possible.
+On the backend, I'm using Prisma with a Turso-hosted Libsql/Sqlite database as well as NextAuth (Auth.js) for authentication which works well enough despite some supposed issues with the App Router. On the frontend, I wanted to implement drag & drop and used DnDKit as a great library to make dnd simple to implement. I also chose Zustand as a simple state management library over something like Redux (or just using hooks or Context) because it made managing and manipulating state from both the main mealplan component and the individual mealplan cards incredibly simple. I chose to use it for a separate client-side cache for the Edamam Recipe API as well to minimize API calls as much as possible.
 
 ### Product Images
 
