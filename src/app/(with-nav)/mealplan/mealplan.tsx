@@ -1,28 +1,67 @@
-'use client';
+"use client";
 
-import { getRandomRecipesAction } from '@/actions/getRandomRecipes';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { cn, isEdamamRecipe } from '@/lib/utils';
-import { Recipe } from '@prisma/client';
-import { useEffect, useState, Suspense } from 'react';
-import MealplanCard from './mealplanCard';
-import { useMealplanStore } from '@/store/mealplanStore';
-import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
-import { EdamamRecipe } from '@/types/edamam';
-import { useEdamamStore } from '@/store/edamamStore';
-import { ToggleButton, ToggleButtonOption } from '@/components/ui/toggleButton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import Logo from '/public/YesChef_Logo.svg';
-import Image from 'next/image';
-import useMediaQuery from '@/hooks/useMediaQuery';
-import useKeyboardShortcut from '@/hooks/useKeyDown';
-import MealplanLoading from './mealplanLoading';
+import { getRandomRecipesAction } from "@/actions/getRandomRecipes";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { cn, isEdamamRecipe } from "@/lib/utils";
+import { Recipe } from "@prisma/client";
+import { useEffect, useState, Suspense } from "react";
+import MealplanCard from "./mealplanCard";
+import { useMealplanStore } from "@/store/mealplanStore";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { getRecipesFromEdamamAction } from "@/actions/getRecipesFromEdamam";
+import { EdamamRecipe } from "@/types/edamam";
+import { useEdamamStore } from "@/store/edamamStore";
+import { ToggleButton, ToggleButtonOption } from "@/components/ui/toggleButton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Logo from "../../../../public/YesChef_Logo.svg";
+import Image from "next/image";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import useKeyboardShortcut from "@/hooks/useKeyDown";
+import MealplanLoading from "./mealplanLoading";
 
-const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const INITIAL_NUMBER_OF_RECIPES = 5;
+
+// Lookup for dynamic grid classes (Tailwind requires complete class names)
+const GRID_COLS_CLASSES: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+  5: "grid-cols-5",
+  6: "grid-cols-6",
+  7: "grid-cols-7",
+};
+
+const GRID_ROWS_CLASSES: Record<number, string> = {
+  1: "grid-rows-1",
+  2: "grid-rows-2",
+  3: "grid-rows-3",
+  4: "grid-rows-4",
+  5: "grid-rows-5",
+  6: "grid-rows-6",
+  7: "grid-rows-7",
+};
 
 type MealplanProps = {
   userLoggedIn: boolean;
@@ -33,7 +72,7 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const [randomizeOnCooldown, setRandomizeOnCooldown] = useState(false);
   const [cardsShouldAnimate, setCardsShouldAnimate] = useState(true);
 
-  const canUseColumns = useMediaQuery('(min-width: 768px)'); // This is Tailwind's MD
+  const canUseColumns = useMediaQuery("(min-width: 768px)"); // This is Tailwind's MD
 
   // Zustand mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -51,7 +90,9 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
   // Zustand edamam store
   const recipeBacklog = useEdamamStore((state) => state.recipeBacklog);
-  const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
+  const addRecipesToBacklog = useEdamamStore(
+    (state) => state.addRecipesToBacklog
+  );
   const takeFromBacklog = useEdamamStore((state) => state.takeFromBacklog);
 
   // Dndkit
@@ -59,14 +100,26 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
+      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
   // Shortcuts
-  const { flushHeldKeys: flushRandomize } = useKeyboardShortcut(['Space'], handleRandomizeShortcut, { overrideDefault: true });
-  const { flushHeldKeys: flushUndo } = useKeyboardShortcut(['MetaLeft', 'KeyZ'], handleUndoShortcut, { overrideDefault: true });
-  const { flushHeldKeys: flushRedo } = useKeyboardShortcut(['MetaLeft', 'KeyY'], handleRedoShortcut, { overrideDefault: true });
+  const { flushHeldKeys: flushRandomize } = useKeyboardShortcut(
+    ["Space"],
+    handleRandomizeShortcut,
+    { overrideDefault: true }
+  );
+  const { flushHeldKeys: flushUndo } = useKeyboardShortcut(
+    ["MetaLeft", "KeyZ"],
+    handleUndoShortcut,
+    { overrideDefault: true }
+  );
+  const { flushHeldKeys: flushRedo } = useKeyboardShortcut(
+    ["MetaLeft", "KeyY"],
+    handleRedoShortcut,
+    { overrideDefault: true }
+  );
 
   function handleRandomizeShortcut() {
     if (randomizeOnCooldown) return;
@@ -97,23 +150,30 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   }
 
   function recipeSourceToggleChanged(value: string) {
-    if (value === 'edamam') {
+    if (value === "edamam") {
       setUseOwnRecipes(false);
-    } else if (value === 'db') {
+    } else if (value === "db") {
       setUseOwnRecipes(true);
     }
   }
 
   async function getNewRecipesFromDB() {
-    const currentIds = mealplans[current].reduce<string[]>((filtered, current) => {
-      if (!isEdamamRecipe(current)) {
-        filtered = [...filtered, current.id];
-      }
-      return filtered;
-    }, []);
+    const currentIds = mealplans[current].reduce<string[]>(
+      (filtered, current) => {
+        if (!isEdamamRecipe(current)) {
+          filtered = [...filtered, current.id];
+        }
+        return filtered;
+      },
+      []
+    );
 
-    const recipesNeeded = mealplans[current].length - lockStates[current].filter(Boolean).length;
-    const res = await getRandomRecipesAction({ numberOfRecipes: recipesNeeded, currentRecipes: currentIds });
+    const recipesNeeded =
+      mealplans[current].length - lockStates[current].filter(Boolean).length;
+    const res = await getRandomRecipesAction({
+      numberOfRecipes: recipesNeeded,
+      currentRecipes: currentIds,
+    });
 
     if (res.data) {
       // Take lock states into account
@@ -128,7 +188,8 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   }
 
   async function getNewRecipesFromEdamam() {
-    const newRecipesNeeded = mealplans[current].length - lockStates[current].filter(Boolean).length;
+    const newRecipesNeeded =
+      mealplans[current].length - lockStates[current].filter(Boolean).length;
 
     if (newRecipesNeeded <= recipeBacklog.length) {
       const backlogRecipes = takeFromBacklog(newRecipesNeeded);
@@ -143,7 +204,10 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
 
       addNewMealplan(newRecipes as (Recipe | EdamamRecipe)[]);
     } else {
-      const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+      const { data: recipes } = await getRecipesFromEdamamAction({
+        mealType: ["Lunch", "Dinner"],
+        dishType: ["Main course"],
+      });
       if (recipes) {
         addRecipesToBacklog(recipes.slice(newRecipesNeeded));
 
@@ -175,14 +239,20 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
     setCardsShouldAnimate(false);
 
     if (useOwnRecipes) {
-      const currentIds = mealplans[current].reduce<string[]>((filtered, current) => {
-        if (!isEdamamRecipe(current)) {
-          filtered = [...filtered, current.id];
-        }
-        return filtered;
-      }, []);
+      const currentIds = mealplans[current].reduce<string[]>(
+        (filtered, current) => {
+          if (!isEdamamRecipe(current)) {
+            filtered = [...filtered, current.id];
+          }
+          return filtered;
+        },
+        []
+      );
 
-      const { data: newRecipe } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
+      const { data: newRecipe } = await getRandomRecipesAction({
+        numberOfRecipes: 1,
+        currentRecipes: currentIds,
+      });
       if (newRecipe) {
         addOneRecipe(newRecipe[0]);
       }
@@ -193,7 +263,10 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
         const newRecipes = takeFromBacklog(newRecipesNeeded);
         addOneRecipe(newRecipes[0]);
       } else {
-        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+        const { data: recipes } = await getRecipesFromEdamamAction({
+          mealType: ["Lunch", "Dinner"],
+          dishType: ["Main course"],
+        });
         if (recipes) {
           addRecipesToBacklog(recipes.slice(newRecipesNeeded));
           addOneRecipe(recipes.slice(0, newRecipesNeeded)[0]);
@@ -223,13 +296,18 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
   useEffect(() => {
     const getInitialRecipes = async () => {
       if (useOwnRecipes) {
-        const res = await getRandomRecipesAction({ numberOfRecipes: INITIAL_NUMBER_OF_RECIPES });
+        const res = await getRandomRecipesAction({
+          numberOfRecipes: INITIAL_NUMBER_OF_RECIPES,
+        });
 
         if (res.data) {
           initMealplans(res.data);
         }
       } else {
-        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] }); // TODO: Remove!!
+        const { data: recipes } = await getRecipesFromEdamamAction({
+          mealType: ["Lunch", "Dinner"],
+          dishType: ["Main course"],
+        }); // TODO: Remove!!
 
         if (recipes) {
           addRecipesToBacklog(recipes.slice(INITIAL_NUMBER_OF_RECIPES));
@@ -253,21 +331,38 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
       ) : (
         <div className="w-full h-full flex flex-col gap-2">
           {/* Menu Bar */}
-          <div className={cn('flex items-center gap-2 sm:gap-4 lg:gap-8 pb-4 md:pb-8 h-16', canUseColumns ? 'self-end' : 'self-end my-2')}>
-            <ToggleButton name="Recipe source" value={useOwnRecipes ? 'db' : 'edamam'} onValueChange={recipeSourceToggleChanged}>
+          <div
+            className={cn(
+              "flex items-center gap-2 sm:gap-4 lg:gap-8 pb-4 md:pb-8 h-16",
+              canUseColumns ? "self-end" : "self-end my-2"
+            )}
+          >
+            <ToggleButton
+              name="Recipe source"
+              value={useOwnRecipes ? "db" : "edamam"}
+              onValueChange={recipeSourceToggleChanged}
+            >
               <ToggleButtonOption value="edamam" className="text-xs md:text-sm">
                 Online recipes
               </ToggleButtonOption>
-              <ToggleButtonOption value="db" className="text-xs md:text-sm" disabled={!userLoggedIn} tooltipMessage="Log in to use your recipes">
+              <ToggleButtonOption
+                value="db"
+                className="text-xs md:text-sm"
+                disabled={!userLoggedIn}
+                tooltipMessage="Log in to use your recipes"
+              >
                 Your recipes
               </ToggleButtonOption>
             </ToggleButton>
-            <Separator orientation="vertical" className={canUseColumns ? '' : 'ml-1'} />
+            <Separator
+              orientation="vertical"
+              className={canUseColumns ? "" : "ml-1"}
+            />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    className={randomizeOnCooldown ? 'animate-rollDice' : ''}
+                    className={randomizeOnCooldown ? "animate-rollDice" : ""}
                     variant="icon"
                     size="icon"
                     onClick={handleRandomizeClicked}
@@ -323,7 +418,11 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                         stroke="currentColor"
                         className="w-5 h-5"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+                        />
                       </svg>
                     </Button>
                   </TooltipTrigger>
@@ -354,7 +453,11 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                         stroke="currentColor"
                         className="w-5 h-5"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
+                        />
                       </svg>
                     </Button>
                   </TooltipTrigger>
@@ -387,7 +490,11 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                         stroke="currentColor"
                         className="w-5 h-5"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 12h-15"
+                        />
                       </svg>
                     </Button>
                   </TooltipTrigger>
@@ -415,7 +522,11 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
                         stroke="currentColor"
                         className="w-5 h-5"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 4.5v15m7.5-7.5h-15"
+                        />
                       </svg>
                     </Button>
                   </TooltipTrigger>
@@ -430,11 +541,13 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
           {/* Mealplan */}
           <div
             className={cn(
-              'grid gap-2 md:gap-4 place-items-center',
+              "grid gap-2 md:gap-4 place-items-center",
               canUseColumns
-                ? `grid-cols-${mealplans[current].length}`
-                : `grid-flow-col grid-cols-[repeat(2,fit_content(100%))] grid-rows-${mealplans[current].length}`,
-              itemDragging && 'touch-none'
+                ? GRID_COLS_CLASSES[mealplans[current].length]
+                : `grid-flow-col grid-cols-[repeat(2,fit_content(100%))] ${
+                    GRID_ROWS_CLASSES[mealplans[current].length]
+                  }`,
+              itemDragging && "touch-none"
             )}
           >
             {/* Days of Week header */}
@@ -445,23 +558,38 @@ export default function Mealplan({ userLoggedIn }: MealplanProps) {
             ))}
 
             {/* Recipes (dnd area) */}
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd} onDragStart={() => setItemDragging(true)}>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onDragEnd}
+              onDragStart={() => setItemDragging(true)}
+            >
               <SortableContext
                 items={mealplans[current].map((_recipe, index) => `${index}`)}
-                strategy={canUseColumns ? horizontalListSortingStrategy : verticalListSortingStrategy}
+                strategy={
+                  canUseColumns
+                    ? horizontalListSortingStrategy
+                    : verticalListSortingStrategy
+                }
               >
                 {mealplans[current] &&
                   mealplans[current].map(
                     (recipe, index) =>
                       recipe && (
                         <MealplanCard
-                          key={isEdamamRecipe(recipe) ? `${index}-${(recipe as EdamamRecipe).uri}` : `${index}-${(recipe as Recipe).id}`}
+                          key={
+                            isEdamamRecipe(recipe)
+                              ? `${index}-${(recipe as EdamamRecipe).uri}`
+                              : `${index}-${(recipe as Recipe).id}`
+                          }
                           recipe={recipe}
-                          recipeType={isEdamamRecipe(recipe) ? 'Edamam' : 'DB'}
+                          recipeType={isEdamamRecipe(recipe) ? "Edamam" : "DB"}
                           index={index}
                           cardShouldAnimate={cardsShouldAnimate}
                           onRecipeRandomized={() => setCardsShouldAnimate(true)}
-                          orientation={canUseColumns ? 'vertical' : 'horizontal'}
+                          orientation={
+                            canUseColumns ? "vertical" : "horizontal"
+                          }
                           userLoggedIn={userLoggedIn}
                         />
                       )

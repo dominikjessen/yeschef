@@ -1,18 +1,21 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import HeroImage from '/public/HeroImage.svg';
-import DummyMealplanCard from '@/components/ui/DummyMealplanCard';
+import Link from "next/link";
+import Image from "next/image";
+import HeroImage from "../../../public/HeroImage.svg";
+import DummyMealplanCard from "@/components/ui/DummyMealplanCard";
 
 // Starting at Sunday here for JS .getDay() indexing
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default async function Home() {
   return (
     <div className="my-6 md:my-8 lg:my-12 py-12 md:py-24 lg:py-32 xl:py-40 px-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 xl:gap-20 place-items-center bg-white rounded-3xl">
       <div className="flex flex-col gap-4 lg:gap-8 order-last md:order-first">
-        <h1 className="font-bold text-4xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight">Weekly meal planning done in no time!</h1>
+        <h1 className="font-bold text-4xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight">
+          Weekly meal planning done in no time!
+        </h1>
         <h2 className="text-lg md:text-sm lg:text-base xl:text-xl text-foreground/70">
-          Use your own recipes or random inspiring recipes from different cuisines to plan your recipes for the whole week.
+          Use your own recipes or random inspiring recipes from different
+          cuisines to plan your recipes for the whole week.
         </h2>
         <div className="flex flex-col xl:flex-row gap-4 lg:gap-8 mt-4">
           <Link

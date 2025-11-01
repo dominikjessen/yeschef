@@ -1,31 +1,32 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
+import { PrismaLibSQL } from "@prisma/adapter-libsql";
 
 const prismaClientSingleton = () => {
-  const prisma = new PrismaClient({
-    log: [
-      {
-        emit: 'event',
-        level: 'query'
-      },
-      {
-        emit: 'stdout',
-        level: 'error'
-      },
-      {
-        emit: 'stdout',
-        level: 'info'
-      },
-      {
-        emit: 'stdout',
-        level: 'warn'
-      }
-    ]
+  const adapter = new PrismaLibSQL({
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
   });
 
-  prisma.$on('query', (e: Prisma.QueryEvent) => {
-    console.log('Query: ' + e.query);
-    console.log('Params: ' + e.params);
-    console.log('Duration: ' + e.duration + 'ms');
+  const prisma = new PrismaClient({
+    adapter,
+    log: [
+      {
+        emit: "event",
+        level: "query",
+      },
+      {
+        emit: "stdout",
+        level: "error",
+      },
+      {
+        emit: "stdout",
+        level: "info",
+      },
+      {
+        emit: "stdout",
+        level: "warn",
+      },
+    ],
   });
 
   return prisma;
@@ -41,4 +42,4 @@ const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
 export default prisma;
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

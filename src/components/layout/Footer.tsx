@@ -1,14 +1,25 @@
-import Image from 'next/image';
-import EdamamBadge from '/public/Edamam_Badge_Transparent.svg';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
-import { Separator } from '../ui/separator';
+import Image from "next/image";
+import EdamamBadge from "../../../public/Edamam_Badge_Transparent.svg";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { Separator } from "../ui/separator";
 
 export default async function Footer({ className }: { className?: string }) {
   return (
-    <footer className={cn('bg-white py-6 flex flex-col items-center gap-8', className)}>
+    <footer
+      className={cn(
+        "bg-white py-6 flex flex-col items-center gap-8",
+        className
+      )}
+    >
       <div className="flex gap-8 items-center py-2">
-        <Image src={EdamamBadge} alt="Powered by Edamam" width={150} priority={false} className="mr-16" />
+        <Image
+          src={EdamamBadge}
+          alt="Powered by Edamam"
+          width={150}
+          priority={false}
+          className="mr-16"
+        />
         <Link href="/terms" className="hover:text-primary">
           Terms of Service
         </Link>
@@ -17,7 +28,9 @@ export default async function Footer({ className }: { className?: string }) {
         </Link>
       </div>
       <Separator className="w-1/5" />
-      <span className="text-sm text-foreground/70">© Yes, Chef! 2023. All rights reserved.</span>
+      <span className="text-sm text-foreground/70">
+        © Yes, Chef! 2023. All rights reserved.
+      </span>
     </footer>
   );
 }

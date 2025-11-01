@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -65,3 +63,72 @@
     --ring: 23 50% 4%; /* #0F0905 */
   }
 }
+
+@theme {
+  /* Custom colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-foreground-lighter: hsl(var(--foreground-lighter));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-accent: hsl(var(--accent));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+
+  --color-inactive: hsl(var(--inactive));
+  --color-inactive-recipes: hsl(var(--inactive-recipes));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+
+  /* Custom animations */
+  --animate-in: in 200ms ease-in-out;
+  --animate-out: out 200ms ease-in-out;
+  --animate-roll-dice: rollDice 1000ms ease-in-out;
+
+  /* Grid rows */
+  --grid-template-rows-7: repeat(7, minmax(0, 1fr));
+}
+
+@keyframes in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rollDice {
+  0% {
+    transform: rotate(0deg);
+  }
+  5% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Safelist classes - make sure they're always generated */
+@source "../components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../app/**/*.{js,ts,jsx,tsx,mdx}";

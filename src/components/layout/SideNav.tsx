@@ -1,29 +1,40 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { Button } from '../ui/button';
-import { Session } from 'next-auth';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import AccountDropdown from './AccountDropdown';
-import Logo from '/public/YesChef_Logo.svg';
-import Image from 'next/image';
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+import { Session } from "next-auth";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import AccountDropdown from "./AccountDropdown";
+import Logo from "../../../public/YesChef_Logo.svg";
+import Image from "next/image";
 
-export function SideNav({ session, headerClassName }: { session: Session | null; headerClassName?: string }) {
+export function SideNav({
+  session,
+  headerClassName,
+}: {
+  session: Session | null;
+  headerClassName?: string;
+}) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const pathName = usePathname();
 
   function openMenuMobile() {
-    document.body.style.overflowY = 'hidden';
+    document.body.style.overflowY = "hidden";
     setMenuOpen(true);
     setMobileMenuOpen(true);
   }
 
   function closeMenu() {
-    document.body.style.overflowY = 'auto';
+    document.body.style.overflowY = "auto";
     setMenuOpen(false);
     setMobileMenuOpen(false);
   }
@@ -39,11 +50,11 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
         id="menu-drawer"
         tabIndex={menuOpen ? 0 : -1}
         className={cn(
-          'h-screen w-full sticky top-0 bg-primary text-foreground py-2 flex flex-col items-center z-30 transition duration-300 ease-in-out',
+          "h-screen w-full sticky top-0 bg-primary text-foreground py-2 flex flex-col items-center z-30 transition duration-300 ease-in-out",
           // Layout dependent styles
-          'hidden md:flex col-span-1 row-span-2',
+          "hidden md:flex col-span-1 row-span-2",
           // Mobile menu fixed outside of grid
-          mobileMenuOpen ? 'fixed z-50 flex w-4/6 shadow py-10' : ''
+          mobileMenuOpen ? "fixed z-50 flex w-4/6 shadow py-10" : ""
         )}
       >
         {menuOpen ? (
@@ -52,7 +63,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             aria-label="Close menu"
             variant="unstyled"
             size="unstyled"
-            className={cn('px-4 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out')}
+            className={cn(
+              "px-4 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out"
+            )}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,10 +88,23 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
             aria-label="Open menu"
             variant="unstyled"
             size="unstyled"
-            className={cn('w-10 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out')}
+            className={cn(
+              "w-10 h-10 rounded-lg hover:bg-foreground/10 transition duration-300 ease-in-out"
+            )}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 ">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-7 h-7 "
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
             </svg>
           </Button>
         )}
@@ -91,9 +117,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
               variant="unstyled"
               size="unstyled"
               className={cn(
-                'h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start',
-                menuOpen ? 'w-full' : 'w-16',
-                pathName === '/mealplan' && 'bg-secondary/80'
+                "h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start",
+                menuOpen ? "w-full" : "w-16",
+                pathName === "/mealplan" && "bg-secondary/80"
               )}
             >
               <svg
@@ -121,9 +147,9 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
                 variant="unstyled"
                 size="unstyled"
                 className={cn(
-                  'h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start',
-                  menuOpen ? 'w-full' : 'w-16',
-                  pathName.includes('recipes') && 'bg-secondary/80'
+                  "h-16 p-4 rounded-xl hover:bg-secondary/80 justify-start",
+                  menuOpen ? "w-full" : "w-16",
+                  pathName.includes("recipes") && "bg-secondary/80"
                 )}
               >
                 <svg
@@ -148,8 +174,8 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
                 <TooltipTrigger
                   aria-label="Log in to manage your recipes"
                   className={cn(
-                    'h-16 p-4 rounded-xl hover:bg-primary/10 text-inactive inline-flex items-center justify-start cursor-default',
-                    menuOpen ? 'w-full' : 'w-16'
+                    "h-16 p-4 rounded-xl hover:bg-primary/10 text-inactive inline-flex items-center justify-start cursor-default",
+                    menuOpen ? "w-full" : "w-16"
                   )}
                 >
                   <svg
@@ -177,21 +203,42 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
       </aside>
 
       <header
-        className={cn('max-h-[58px] sticky top-0 z-40 py-2 bg-white backdrop-blur border-b flex justify-between items-center', headerClassName)}
+        className={cn(
+          "max-h-[58px] sticky top-0 z-40 py-2 bg-white backdrop-blur border-b flex justify-between items-center",
+          headerClassName
+        )}
       >
         {/* Mobile menu button */}
         <Button
           onClick={openMenuMobile}
           variant="unstyled"
           size="unstyled"
-          className={cn('md:hidden w-10 h-10 rounded-lg hover:bg-foreground/20 transition duration-300 ease-in-out')}
+          className={cn(
+            "md:hidden w-10 h-10 rounded-lg hover:bg-foreground/20 transition duration-300 ease-in-out"
+          )}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 ">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-7 h-7 "
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
           </svg>
         </Button>
         <Link href="/">
-          <Image src={Logo.src} alt="Yes, Chef! Logo" width={Logo.width / 2.5} height={Logo.height / 2.5} />
+          <Image
+            src={Logo.src}
+            alt="Yes, Chef! Logo"
+            width={Logo.width / 2.5}
+            height={Logo.height / 2.5}
+          />
         </Link>
         {session ? (
           <AccountDropdown session={session} />
@@ -203,7 +250,12 @@ export function SideNav({ session, headerClassName }: { session: Session | null;
       </header>
 
       {/* Backdrop */}
-      {mobileMenuOpen && <div onClick={closeMenu} className="absolute w-screen h-screen z-40 backdrop-brightness-75 backdrop-blur-sm"></div>}
+      {mobileMenuOpen && (
+        <div
+          onClick={closeMenu}
+          className="absolute w-screen h-screen z-40 backdrop-brightness-75 backdrop-blur-sm"
+        ></div>
+      )}
     </>
   );
 }
