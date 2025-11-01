@@ -1,7 +1,8 @@
-import { MagicLinkEmailTemplate } from '@/components/emails/MagicLinkEmailTemplate';
-import { Resend } from 'resend';
-import { Theme } from 'next-auth';
-import { EmailConfig } from 'next-auth/providers/email';
+import { MagicLinkEmailTemplate } from "@/components/emails/MagicLinkEmailTemplate";
+import { Resend } from "resend";
+import { Theme } from "next-auth";
+import { EmailConfig } from "next-auth/providers/email";
+import * as React from "react";
 
 export interface SendVerificationRequestParams {
   identifier: string;
@@ -12,21 +13,29 @@ export interface SendVerificationRequestParams {
   theme: Theme;
 }
 
-export async function sendVerificationRequest(params: SendVerificationRequestParams) {
+export async function sendVerificationRequest(
+  params: SendVerificationRequestParams
+) {
   const { identifier, url } = params;
   const { host } = new URL(url);
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
     await resend.emails.send({
-      from: 'Yes Chef! <noreply@yeschef.recipes>',
+      from: "Yes Chef! <noreply@yeschef.recipes>",
       to: [identifier],
       subject: `Log in to ${host} via magic link`,
       text: text({ url, host }),
-      react: MagicLinkEmailTemplate({ host: host, url: url, userEmail: identifier })
+      react: MagicLinkEmailTemplate({
+        host: host,
+        url: url,
+        userEmail: identifier,
+      }) as React.ReactElement,
     });
   } catch (error) {
-    throw new Error('Something went wrong when sending the login email. Please try again.');
+    throw new Error(
+      "Something went wrong when sending the login email. Please try again."
+    );
   }
 }
 

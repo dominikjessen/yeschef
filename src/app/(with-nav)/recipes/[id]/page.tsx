@@ -7,13 +7,13 @@ import { redirect } from "next/navigation";
 import ExistingRecipeTools from "./ExistingRecipeTools";
 
 export type RecipePageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function RecipePage({ params }: RecipePageProps) {
-  const { id } = params;
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session) {

@@ -1,27 +1,32 @@
-'use client';
+"use client";
 
-import { getRandomRecipesAction } from '@/actions/getRandomRecipes';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useMealplanStore } from '@/store/mealplanStore';
-import { CSS } from '@dnd-kit/utilities';
-import { useSortable } from '@dnd-kit/sortable';
-import { Recipe } from '@prisma/client';
-import { HTMLAttributes } from 'react';
-import { motion } from 'framer-motion';
-import { EdamamRecipe } from '@/types/edamam';
-import { getRecipesFromEdamamAction } from '@/actions/getRecipesFromEdamam';
-import { saveEdamamRecipeForUserAction } from '@/actions/saveEdamamRecipeForUser';
-import { useEdamamStore } from '@/store/edamamStore';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { getRandomRecipesAction } from "@/actions/getRandomRecipes";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useMealplanStore } from "@/store/mealplanStore";
+import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/sortable";
+import { Recipe } from "@prisma/client";
+import { HTMLAttributes } from "react";
+import { motion } from "framer-motion";
+import { EdamamRecipe } from "@/types/edamam";
+import { getRecipesFromEdamamAction } from "@/actions/getRecipesFromEdamam";
+import { saveEdamamRecipeForUserAction } from "@/actions/saveEdamamRecipeForUser";
+import { useEdamamStore } from "@/store/edamamStore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface MealplanCardProps extends HTMLAttributes<HTMLDivElement> {
   recipe: Recipe | EdamamRecipe;
-  recipeType: 'DB' | 'Edamam';
+  recipeType: "DB" | "Edamam";
   index: number;
   cardShouldAnimate: boolean;
   onRecipeRandomized: () => void;
-  orientation: 'vertical' | 'horizontal';
+  orientation: "vertical" | "horizontal";
   userLoggedIn: boolean;
 }
 
@@ -33,7 +38,7 @@ export default function MealplanCard({
   onRecipeRandomized,
   orientation,
   userLoggedIn,
-  className
+  className,
 }: MealplanCardProps) {
   // Mealplan store
   const mealplans = useMealplanStore((state) => state.mealplans);
@@ -41,28 +46,46 @@ export default function MealplanCard({
   const lockStates = useMealplanStore((state) => state.lockStates);
   const useOwnRecipes = useMealplanStore((state) => state.useOwnRecipes);
 
-  const toggleLockStateAtIndex = useMealplanStore((state) => state.toggleLockStateAtIndex);
-  const getNewRecipeForIndex = useMealplanStore((state) => state.getNewRecipeForIndex);
+  const toggleLockStateAtIndex = useMealplanStore(
+    (state) => state.toggleLockStateAtIndex
+  );
+  const getNewRecipeForIndex = useMealplanStore(
+    (state) => state.getNewRecipeForIndex
+  );
 
   // Edamam store
   const recipeBacklog = useEdamamStore((state) => state.recipeBacklog);
 
   const takeFromBacklog = useEdamamStore((state) => state.takeFromBacklog);
-  const addRecipesToBacklog = useEdamamStore((state) => state.addRecipesToBacklog);
+  const addRecipesToBacklog = useEdamamStore(
+    (state) => state.addRecipesToBacklog
+  );
 
   // Dndkit
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `${index}` }); // NOTE: Needs to be string because of Dndkit and index 0
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: `${index}` }); // NOTE: Needs to be string because of Dndkit and index 0
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
   };
 
   async function handleNewRecipeClicked() {
     onRecipeRandomized();
 
     if (useOwnRecipes) {
-      const currentIds = (mealplans[current] as Recipe[]).map((recipe) => recipe.id);
-      const { data: newRecipes } = await getRandomRecipesAction({ numberOfRecipes: 1, currentRecipes: currentIds });
+      const currentIds = (mealplans[current] as Recipe[]).map(
+        (recipe) => recipe.id
+      );
+      const { data: newRecipes } = await getRandomRecipesAction({
+        numberOfRecipes: 1,
+        currentRecipes: currentIds,
+      });
 
       if (newRecipes?.length) {
         getNewRecipeForIndex(index, newRecipes[0]);
@@ -72,7 +95,10 @@ export default function MealplanCard({
         const newRecipes = takeFromBacklog(1);
         getNewRecipeForIndex(index, newRecipes[0]);
       } else {
-        const { data: recipes } = await getRecipesFromEdamamAction({ mealType: ['Lunch', 'Dinner'], dishType: ['Main course'] });
+        const { data: recipes } = await getRecipesFromEdamamAction({
+          mealType: ["Lunch", "Dinner"],
+          dishType: ["Main course"],
+        });
         if (recipes) {
           addRecipesToBacklog(recipes.slice(1));
           getNewRecipeForIndex(index, recipes.slice(0, 1)[0]);
@@ -83,11 +109,13 @@ export default function MealplanCard({
 
   // NOTE: I'm showing users this button as a nudge to create account. Should however be disabled if not signed in
   async function handleRecipeSavedClicked() {
-    if (recipeType !== 'Edamam') return; // Should be impossible, safety net
+    if (recipeType !== "Edamam") return; // Should be impossible, safety net
 
-    const { success, error } = await saveEdamamRecipeForUserAction(recipe as EdamamRecipe);
+    const { success, error } = await saveEdamamRecipeForUserAction(
+      recipe as EdamamRecipe
+    );
     if (success) {
-      alert('Recipe saved successfully');
+      alert("Recipe saved successfully");
     } else {
       alert(error);
     }
@@ -96,20 +124,31 @@ export default function MealplanCard({
   // Parent decides when opacity animation should play or not
   const opacity = cardShouldAnimate ? 0 : 1;
 
+  // Extract className from attributes to avoid type conflicts with framer-motion
+  const { className: attributesClassName, ...restAttributes } =
+    attributes as typeof attributes & { className?: string };
+
+  const combinedClassName = cn(
+    isDragging ? "z-50" : "z-auto",
+    orientation === "vertical"
+      ? "flex-col gap-8 py-10 px-4"
+      : "flex-row-reverse justify-between gap-3 py-4 px-2",
+    "rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow h-full w-full",
+    attributesClassName,
+    className
+  );
+
+  const MotionDiv = motion.div as any;
+
   return (
-    <motion.div
+    <MotionDiv
       ref={setNodeRef}
       style={style}
       initial={{ opacity }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.05 * index }}
-      {...attributes}
-      className={cn(
-        isDragging ? 'z-50' : 'z-auto',
-        orientation === 'vertical' ? 'flex-col gap-8 py-10 px-4' : 'flex-row-reverse justify-between gap-3 py-4 px-2',
-        'rounded-md border shadow-sm bg-card text-card-foreground flex items-center cursor-default grow h-full w-full',
-        className
-      )}
+      {...restAttributes}
+      className={combinedClassName}
     >
       <TooltipProvider>
         <Tooltip>
@@ -149,8 +188,14 @@ export default function MealplanCard({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="icon" size="icon" aria-label="Drag handle" {...listeners} disabled={lockStates[current][index]}>
-              {orientation === 'vertical' ? (
+            <Button
+              variant="icon"
+              size="icon"
+              aria-label="Drag handle"
+              {...listeners}
+              disabled={lockStates[current][index]}
+            >
+              {orientation === "vertical" ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -196,10 +241,21 @@ export default function MealplanCard({
               variant="icon"
               size="icon"
               onClick={() => toggleLockStateAtIndex(index)}
-              aria-label={lockStates[current][index] ? `Unlock recipe ${index + 1}` : `Lock recipe ${index + 1}`}
+              aria-label={
+                lockStates[current][index]
+                  ? `Unlock recipe ${index + 1}`
+                  : `Lock recipe ${index + 1}`
+              }
             >
               {lockStates[current][index] ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -207,7 +263,14 @@ export default function MealplanCard({
                   />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -218,7 +281,9 @@ export default function MealplanCard({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{lockStates[current][index] ? 'Unlock recipe' : 'Lock recipe'}</p>
+            <p>
+              {lockStates[current][index] ? "Unlock recipe" : "Lock recipe"}
+            </p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -234,7 +299,14 @@ export default function MealplanCard({
                   aria-label="Go to recipe url"
                   className="h-6 w-6 md:h-9 md:w-9 lg:h-10 lg:w-10 hover:bg-foreground/10 flex items-center justify-center rounded"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -249,11 +321,16 @@ export default function MealplanCard({
             </Tooltip>
           </TooltipProvider>
         )}
-        {recipeType === 'Edamam' && userLoggedIn && (
+        {recipeType === "Edamam" && userLoggedIn && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={handleRecipeSavedClicked} variant="icon" size="icon" title="Add to my recipes">
+                <Button
+                  onClick={handleRecipeSavedClicked}
+                  variant="icon"
+                  size="icon"
+                  title="Add to my recipes"
+                >
                   <svg
                     className="h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -280,13 +357,25 @@ export default function MealplanCard({
 
       <h3
         className={cn(
-          orientation === 'vertical' ? 'text-center pt-3 mt-auto line-clamp-3 text-sm xl:text-lg' : ' text-xs grow line-clamp-2 w-full mr-1',
-          'font-semibold'
+          orientation === "vertical"
+            ? "text-center pt-3 mt-auto line-clamp-3 text-sm xl:text-lg"
+            : " text-xs grow line-clamp-2 w-full mr-1",
+          "font-semibold"
         )}
-        title={recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
+        title={
+          recipeType === "DB"
+            ? (recipe as Recipe).name
+            : recipeType === "Edamam"
+            ? (recipe as EdamamRecipe).label
+            : ""
+        }
       >
-        {recipeType === 'DB' ? (recipe as Recipe).name : recipeType === 'Edamam' ? (recipe as EdamamRecipe).label : ''}
+        {recipeType === "DB"
+          ? (recipe as Recipe).name
+          : recipeType === "Edamam"
+          ? (recipe as EdamamRecipe).label
+          : ""}
       </h3>
-    </motion.div>
+    </MotionDiv>
   );
 }
