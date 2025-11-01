@@ -1,10 +1,10 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import RecipeForm from '@/components/forms/RecipeForm';
-import prisma from '@/lib/prismaClient';
-import { getServerSession } from 'next-auth';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import ExistingRecipeTools from './ExistingRecipeTools';
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import RecipeForm from "@/components/forms/RecipeForm";
+import prisma from "@/lib/prismaClient";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import ExistingRecipeTools from "./ExistingRecipeTools";
 
 export type RecipePageProps = {
   params: {
@@ -17,13 +17,13 @@ export default async function RecipePage({ params }: RecipePageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/');
+    redirect("/");
   }
 
   const recipe = await prisma.recipe.findFirst({ where: { id: id } });
 
   if (!recipe) {
-    redirect('/recipes');
+    redirect("/recipes");
   }
 
   return (

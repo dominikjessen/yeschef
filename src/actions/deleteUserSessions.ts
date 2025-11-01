@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import prisma from '@/lib/prismaClient';
-import { getServerSession } from 'next-auth';
-import { cookies } from 'next/headers';
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import prisma from "@/lib/prismaClient";
+import { getServerSession } from "next-auth";
+import { cookies } from "next/headers";
 
 export type DeleteUserSessionsResponse = {
   success: boolean;
@@ -14,16 +14,19 @@ export async function deleteUserSessionsAction(): Promise<DeleteUserSessionsResp
   const session = await getServerSession(authOptions);
 
   if (!session?.user.id) {
-    return { success: false, error: new Error('Oops, something went wrong.') };
+    return { success: false, error: new Error("Oops, something went wrong.") };
   }
 
   try {
     await prisma.session.deleteMany({
-      where: { userId: session.user.id }
+      where: { userId: session.user.id },
     });
-    cookies().delete('next-auth.session-token');
-    cookies().delete('next-auth.csrf-token');
-    cookies().delete('next-auth.callback-url');
+
+    const cookieStore = await cookies();
+
+    cookieStore.delete("next-auth.session-token");
+    cookieStore.delete("next-auth.csrf-token");
+    cookieStore.delete("next-auth.callback-url");
   } catch (error) {
     return { success: false, error: error as Error };
   }
