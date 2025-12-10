@@ -32,7 +32,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.4",
-    "next": "latest",
+    "next": "15.5.7",
     "next-auth": "^4.24.4",
     "react": "latest",
     "react-dom": "latest",
